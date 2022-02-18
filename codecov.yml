@@ -4,14 +4,14 @@ codecov:
 coverage:
   precision: 2
   round: down
-  range: "90...100"
+  range: "85...100"
   status:
     patch:
       default:
         target: 30%
     project:
       default:
-        target: 90%
+        target: 85%
 
 parsers:
   gcov:
