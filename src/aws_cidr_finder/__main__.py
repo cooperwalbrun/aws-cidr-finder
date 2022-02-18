@@ -26,6 +26,17 @@ _parser.add_argument(
     help="The AWS region to use when interacting with the AWS API."
 )
 _parser.add_argument(
+    "--mask",
+    type=int,
+    metavar="MASK",
+    dest="mask",
+    help=(
+        "The CIDR mask that you want results to use (note: this will fail if the mask is smaller "
+        "than one or more unused CIDR blocks). Also beware specifying high mask values (i.e. 24+) "
+        "due to the potentially huge command output!"
+    )
+)
+_parser.add_argument(
     "--json", action="store_true", dest="json", help="Outputs results in JSON format."
 )
 
@@ -62,6 +73,10 @@ def main() -> None:
         subnet_cidr_gaps[vpc_name] = utilities.merge_adjacent_cidrs(
             utilities.find_subnet_holes(vpc_cidr, subnet_cidrs)
         )
+        if arguments.get("mask") is not None:
+            subnet_cidr_gaps[vpc_name] = utilities.break_down_to_desired_mask(
+                subnet_cidr_gaps[vpc_name], arguments["mask"]
+            )
 
     sorted_data: dict[str, list[str]] = {
         vpc_name: utilities.sort_cidrs(subnet_cidrs)

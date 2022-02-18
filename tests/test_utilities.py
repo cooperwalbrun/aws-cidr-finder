@@ -28,6 +28,26 @@ def test_cidrs_are_adjacent() -> None:
         assert not utilities.cidrs_are_adjacent(cidr2, cidr1)
 
 
+def test_break_down_to_desired_mask() -> None:
+    # yapf: disable
+    test_cases = [
+        ([], 7,
+         []),
+        (["0.0.0.0/0"], 2,
+         ["0.0.0.0/2", "64.0.0.0/2", "128.0.0.0/2", "192.0.0.0/2"])
+    ]
+    # yapf: enable
+
+    for cidrs, mask, expected in test_cases:
+        actual = utilities.break_down_to_desired_mask(cidrs, mask)
+        _assert_lists_equal(actual, expected)
+
+        reversed = cidrs.copy()
+        reversed.reverse()  # To assert that order is irrelevant
+        actual_reverse = utilities.break_down_to_desired_mask(reversed, mask)
+        _assert_lists_equal(actual_reverse, expected)
+
+
 def test_merge_adjacent_cidrs() -> None:
     # yapf: disable
     test_cases = [

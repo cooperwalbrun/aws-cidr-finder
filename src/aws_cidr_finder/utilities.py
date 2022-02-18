@@ -1,3 +1,4 @@
+import sys
 from functools import cmp_to_key
 from ipaddress import IPv4Network, ip_network
 
@@ -35,6 +36,29 @@ def get_mask(cidr: str) -> int:
 
 def get_ip_count(cidr: str) -> int:
     return ip_network(cidr).num_addresses
+
+
+def break_down_to_desired_mask(cidrs: list[str], mask: int) -> list[str]:
+    for cidr in cidrs:
+        if get_mask(cidr) > mask:
+            messages = [
+                f"Desired mask ({mask}) is incompatible with the available CIDR blocks! ",
+                (
+                    f"Encountered a CIDR whose mask is {get_mask(cidr)}, which is higher than  "
+                    f"{mask}. Offending CIDR: {cidr}"
+                ),
+                "Run the command again without the --masks argument to see the full list."
+            ]
+            for message in messages:
+                print(message, file=sys.stderr)
+            exit(1)
+
+    ret = []
+    for cidr in cidrs:
+        for sub in ip_network(cidr).subnets(new_prefix=mask):
+            ret.append(get_cidr(sub))
+
+    return ret
 
 
 def merge_adjacent_cidrs(cidrs: list[str]) -> list[str]:
