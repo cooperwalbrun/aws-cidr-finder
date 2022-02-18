@@ -98,10 +98,10 @@ tox                  # Run unit tests using tox (requires that you have the nece
 ## Running aws-cidr-finder Locally
 
 To run the program as a CLI tool in your local development environment, you can use a command such
-as the following (`--merge` operation for demonstrative purposes):
+as the following (`--profile` argument given for demonstrative purposes):
 
 ```bash
-python -m aws_cidr_finder --profile myprofile --region myregion --merge
+python -m aws_cidr_finder --profile myprofile
 ```
 
 ## Formatting Code

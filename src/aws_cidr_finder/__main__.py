@@ -27,12 +27,6 @@ _parser.add_argument(
     help="The AWS region to use to authenticate to the AWS API."
 )
 _parser.add_argument(
-    "--merge",
-    action="store_true",
-    dest="merge",
-    help="Merges all compatible adjacent CIDR blocks into larger CIDR blocks."
-)
-_parser.add_argument(
     "--json", action="store_true", dest="json", help="Outputs command output in JSON format."
 )
 
@@ -54,24 +48,24 @@ def main() -> None:
 
     vpc_data = boto.get_vpc_data()
     subnet_cidrs = boto.get_subnet_cidrs()
-    subnet_cidrs_grouped_by_vpc: dict[str, Tuple[str, set[str]]] = {}
-    subnet_cidr_gaps: dict[str, set[str]] = {}
+    subnet_cidrs_grouped_by_vpc: dict[str, Tuple[str, list[str]]] = {}
+    subnet_cidr_gaps: dict[str, list[str]] = {}
 
     for vpc_name, vpc_cidr in vpc_data:
-        subnet_cidrs_grouped_by_vpc[vpc_name] = (vpc_cidr, set())
-        subnet_cidr_gaps[vpc_name] = set()
+        subnet_cidrs_grouped_by_vpc[vpc_name] = (vpc_cidr, [])
+        subnet_cidr_gaps[vpc_name] = []
         for subnet_cidr in subnet_cidrs:
             if utilities.is_cidr_inside(vpc_cidr, subnet_cidr):
-                subnet_cidrs_grouped_by_vpc[vpc_name][1].add(subnet_cidr)
+                subnet_cidrs_grouped_by_vpc[vpc_name][1].append(subnet_cidr)
 
     for vpc_name, data in subnet_cidrs_grouped_by_vpc.items():
         vpc_cidr, subnet_cidrs = data
-        subnet_cidr_gaps[vpc_name] = utilities.find_subnet_holes(vpc_cidr, subnet_cidrs)
-        if arguments["merge"]:
-            subnet_cidr_gaps[vpc_name] = utilities.merge_adjacent_cidrs(subnet_cidr_gaps[vpc_name])
+        subnet_cidr_gaps[vpc_name] = utilities.merge_adjacent_cidrs(
+            utilities.find_subnet_holes(vpc_cidr, subnet_cidrs)
+        )
 
     sorted_data = {
-        vpc_name: utilities.sort_cidrs(list(subnet_cidrs))
+        vpc_name: utilities.sort_cidrs(subnet_cidrs)
         for vpc_name,
         subnet_cidrs in subnet_cidr_gaps.items()
     }
