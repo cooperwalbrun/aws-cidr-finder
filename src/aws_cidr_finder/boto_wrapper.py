@@ -5,7 +5,7 @@ import boto3
 from botocore.client import BaseClient
 
 
-class BotoWrapper:
+class BotoWrapper:  # pragma: no cover
     def __init__(self, profile_name: Optional[str], region: Optional[str]):
         if profile_name is not None:
             boto = boto3.session.Session(profile_name=profile_name, region_name=region)
@@ -17,7 +17,7 @@ class BotoWrapper:
             )
         self._client: BaseClient = boto.client("ec2")
 
-    def get_vpc_data(self) -> set[Tuple[str, str]]:
+    def get_vpc_data(self) -> list[Tuple[str, str]]:
         def get_vpc_name(cidr: str, tags: list[dict[str, str]]) -> str:
             for key_value_pair in tags:
                 if key_value_pair["Key"] == "Name":
@@ -25,9 +25,8 @@ class BotoWrapper:
             return cidr
 
         vpcs = self._client.describe_vpcs()["Vpcs"]
-        return set([(get_vpc_name(vpc["CidrBlock"], vpc["Tags"]), vpc["CidrBlock"])
-                    for vpc in vpcs])
+        return [(get_vpc_name(vpc["CidrBlock"], vpc["Tags"]), vpc["CidrBlock"]) for vpc in vpcs]
 
-    def get_subnet_cidrs(self) -> set[str]:
+    def get_subnet_cidrs(self) -> list[str]:
         subnets = self._client.describe_subnets()["Subnets"]
-        return set([subnet["CidrBlock"] for subnet in subnets])
+        return [subnet["CidrBlock"] for subnet in subnets]

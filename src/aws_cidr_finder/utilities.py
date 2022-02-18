@@ -33,22 +33,28 @@ def get_mask(cidr: str) -> int:
     return int(cidr.split("/")[1])
 
 
+def get_ip_count(cidr: str) -> int:
+    return ip_network(cidr).num_addresses
+
+
 def merge_adjacent_cidrs(cidrs: list[str]) -> list[str]:
     if len(cidrs) > 1:
         sorted_cidrs = sort_cidrs(cidrs)
         merged_cidrs = []
         recurse = False
 
-        def append(i: int, cidr: str, next_cidr: str) -> None:
-            merged_cidrs.append(cidr)
-            if i == len(cidrs) - 2:
-                # We are at the end of the list, and since we only iterate until len(cidrs) - 1,
-                # we have ot add the last CIDR now
-                merged_cidrs.append(next_cidr)
-
         for i in range(len(cidrs) - 1):
             cidr = sorted_cidrs[i]
             next_cidr = sorted_cidrs[i + 1]
+
+            def append() -> None:
+                if not cidr_overlaps_any(merged_cidrs, cidr):
+                    merged_cidrs.append(cidr)
+                if i == len(cidrs) - 2 and not cidr_overlaps_any(merged_cidrs, next_cidr):
+                    # We are at the end of the list, and since we only iterate until len(cidrs) - 1,
+                    # we have ot add the last CIDR now
+                    merged_cidrs.append(next_cidr)
+
             if cidrs_are_adjacent(cidr, next_cidr) and \
                     1 <= get_mask(cidr) == get_mask(next_cidr) <= 32:
                 merged = ip_network(cidr).supernet(prefixlen_diff=1)
@@ -57,10 +63,10 @@ def merge_adjacent_cidrs(cidrs: list[str]) -> list[str]:
                         merged_cidrs.append(get_cidr(merged))
                         i += 1
                         recurse = True
-                elif not cidr_overlaps_any(merged_cidrs, get_cidr(merged)):
-                    append(i, cidr, next_cidr)
+                else:
+                    append()
             else:
-                append(i, cidr, next_cidr)
+                append()
 
         if recurse:
             return merge_adjacent_cidrs(merged_cidrs)

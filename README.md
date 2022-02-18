@@ -8,9 +8,9 @@
 
 ## Overview
 
-`aws-cidr-finder` is a Python CLI tool which finds unused CIDR blocks in your AWS VPCs and outputs
-them to STDOUT. It is very simple, but can be quite useful for users who manage many subnets across
-one or more VPCs.
+`aws-cidr-finder` is a Python CLI tool which finds unused CIDR blocks (IPv4 only currently) in your
+AWS VPCs and outputs them to STDOUT. It is very simple, but can be quite useful for users who manage
+many subnets across one or more VPCs.
 
 ## Installation
 

@@ -1,5 +1,4 @@
 import json
-import os
 import sys
 from argparse import ArgumentParser, Namespace
 from typing import Any, Tuple
@@ -7,7 +6,7 @@ from typing import Any, Tuple
 from tabulate import tabulate
 
 from aws_cidr_finder import utilities
-from aws_cidr_finder.boto import BotoWrapper
+from aws_cidr_finder.boto_wrapper import BotoWrapper
 
 _parser: ArgumentParser = ArgumentParser(
     description="A CLI tool for finding unused CIDR blocks in AWS VPCs."
@@ -24,10 +23,10 @@ _parser.add_argument(
     type=str,
     metavar="REGION",
     dest="region",
-    help="The AWS region to use to authenticate to the AWS API."
+    help="The AWS region to use when interacting with the AWS API."
 )
 _parser.add_argument(
-    "--json", action="store_true", dest="json", help="Outputs command output in JSON format."
+    "--json", action="store_true", dest="json", help="Outputs results in JSON format."
 )
 
 
@@ -64,7 +63,7 @@ def main() -> None:
             utilities.find_subnet_holes(vpc_cidr, subnet_cidrs)
         )
 
-    sorted_data = {
+    sorted_data: dict[str, list[str]] = {
         vpc_name: utilities.sort_cidrs(subnet_cidrs)
         for vpc_name,
         subnet_cidrs in subnet_cidr_gaps.items()
@@ -72,8 +71,15 @@ def main() -> None:
     if arguments["json"]:
         print(json.dumps(sorted_data))
     else:
-        table_data = [[os.linesep.join(cidrs) for cidrs in sorted_data.values()]]
-        print(tabulate(table_data, headers=sorted_data.keys()))
+        for vpc_name, sorted_cidrs in sorted_data.items():
+            print(f"Here are the available CIDR blocks in the '{vpc_name}' VPC:")
+            table_data = []
+            for cidr in sorted_cidrs:
+                table_data.append([cidr, utilities.get_ip_count(cidr)])
+            table_data.append([
+                "Total", sum([utilities.get_ip_count(cidr) for cidr in sorted_cidrs])
+            ])
+            print(tabulate(table_data, headers=["CIDR", "IP Count"]))
 
 
 if __name__ == "__main__":
