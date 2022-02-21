@@ -55,10 +55,10 @@ the result of the command displayed only two CIDRs: a `/19` and a `/17`.
 >mathematically have to begin at IP address `172.31.64.0`, and that IP address is already taken by a
 >subnet!
 
-However, we can change this "simplification" behavior by specifying the `--mask` CLI flag:
+However, we can change this "simplification" behavior by specifying the `--prefix` CLI flag:
 
 ```bash
-aws-cidr-finder --profile myprofile --mask 20
+aws-cidr-finder --profile myprofile --prefix 20
 ```
 
 Now, the expected output should look something like this:
@@ -80,15 +80,15 @@ CIDR               IP Count
 Total                 40960
 ```
 
-With the `--mask` argument, we can now query our available network space to our desired level of
-detail, as long as we do not specify a smaller mask than the largest mask in the original list. For
-example:
+With the `--prefix` argument, we can now query our available network space to our desired level of
+detail, as long as we do not specify a smaller prefix than the largest prefix in the original list.
+For example:
 
 ```
-$ aws-cidr-finder --profile myprofile --mask 18
-Desired mask (18) is incompatible with the available CIDR blocks!
-Encountered a CIDR whose mask is 19, which is higher than 18. Offending CIDR: 172.31.96.0/19
-Run the command again without the --masks argument to see the full list.
+$ aws-cidr-finder --profile myprofile --prefix 18
+Desired prefix (18) is incompatible with the available CIDR blocks!
+Encountered a CIDR whose prefix is 19, which is higher than 18. Offending CIDR: 172.31.96.0/19
+Run the command again without the --prefix argument to see the full list.
 ```
 
 ## Installation
@@ -108,7 +108,7 @@ environment variables. If both are available simultaneously, `aws-cidr-finder` w
 profile.
 
 The environment variables for the keypair approach are `AWS_ACCESS_KEY_ID` and
-`AWS_SECRET_ACCESS_KEY` respectively.
+`AWS_SECRET_ACCESS_KEY` (the same values Boto uses).
 
 You should also ensure that the profile/keypair you are using has the AWS IAM access needed to make
 the underlying API calls via Boto. Here is a minimal IAM policy document that fills this

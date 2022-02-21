@@ -26,14 +26,14 @@ _parser.add_argument(
     help="The AWS region to use when interacting with the AWS API."
 )
 _parser.add_argument(
-    "--mask",
+    "--prefix",
     type=int,
-    metavar="MASK",
-    dest="mask",
+    metavar="PREFIX",
+    dest="prefix",
     help=(
-        "The CIDR mask that you want results to use (note: this will fail if the mask is smaller "
-        "than one or more unused CIDR blocks). Also beware specifying high mask values (i.e. 24+) "
-        "due to the potentially huge command output!"
+        "The CIDR prefix that you want results to use (note: this will fail if the prefix is "
+        "smaller than one or more unused CIDR blocks). Also beware specifying high prefix values "
+        "(i.e. 24+) due to the potentially huge command output!"
     )
 )
 _parser.add_argument(
@@ -70,12 +70,10 @@ def main() -> None:
 
     for vpc_name, data in subnet_cidrs_grouped_by_vpc.items():
         vpc_cidr, subnet_cidrs = data
-        subnet_cidr_gaps[vpc_name] = utilities.merge_adjacent_cidrs(
-            utilities.find_subnet_holes(vpc_cidr, subnet_cidrs)
-        )
-        if arguments.get("mask") is not None:
-            subnet_cidr_gaps[vpc_name] = utilities.break_down_to_desired_mask(
-                subnet_cidr_gaps[vpc_name], arguments["mask"]
+        subnet_cidr_gaps[vpc_name] = utilities.find_subnet_holes(vpc_cidr, subnet_cidrs)
+        if arguments.get("prefix") is not None:
+            subnet_cidr_gaps[vpc_name] = utilities.break_down_to_desired_prefix(
+                subnet_cidr_gaps[vpc_name], arguments["prefix"]
             )
 
     sorted_data: dict[str, list[str]] = {
