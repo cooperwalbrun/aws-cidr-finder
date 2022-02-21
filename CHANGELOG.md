@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.1.1 - 2022-02-20
+
+### Fixed
+
+* Fixed `find_subnet_holes` slowness and incorrectness issues (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.1.0 - 2022-02-17
 
 ### Added
