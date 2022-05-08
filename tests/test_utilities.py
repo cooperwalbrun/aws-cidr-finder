@@ -96,18 +96,23 @@ def test_break_down_to_desired_prefix() -> None:
         ([], 7,
          []),
         (["0.0.0.0/0"], 2,
-         ["0.0.0.0/2", "64.0.0.0/2", "128.0.0.0/2", "192.0.0.0/2"])
+         ["0.0.0.0/2", "64.0.0.0/2", "128.0.0.0/2", "192.0.0.0/2"]),
+        (["172.31.96.0/19", "172.31.128.0/17"], 17,
+         ["172.31.128.0/17"]),
+        (["172.31.96.0/19", "172.31.128.0/17"], 12,
+         [])
     ]
     # yapf: enable
 
     for cidrs, prefix, expected in test_cases:
-        actual = utilities.break_down_to_desired_prefix(cidrs, prefix)
-        _assert_lists_equal(actual, expected)
+        for json_output in [True, False]:
+            actual = utilities.break_down_to_desired_prefix(cidrs, prefix, json_output)
+            _assert_lists_equal(actual, expected)
 
-        reversed = cidrs.copy()
-        reversed.reverse()  # To assert that order is irrelevant
-        actual_reverse = utilities.break_down_to_desired_prefix(reversed, prefix)
-        _assert_lists_equal(actual_reverse, expected)
+            reversed = cidrs.copy()
+            reversed.reverse()  # To assert that order is irrelevant
+            actual_reverse = utilities.break_down_to_desired_prefix(reversed, prefix, json_output)
+            _assert_lists_equal(actual_reverse, expected)
 
 
 def test_find_subnet_holes() -> None:

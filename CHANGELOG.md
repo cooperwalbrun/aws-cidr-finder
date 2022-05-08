@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.1.2 - 2022-05-08
+
+### Changed
+
+* Enabled querying by a prefix which is lower than at least one prefix in the returned CIDR list (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.1.1 - 2022-02-20
 
 ### Fixed

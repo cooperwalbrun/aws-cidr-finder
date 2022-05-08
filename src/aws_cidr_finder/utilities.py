@@ -47,23 +47,25 @@ def get_first_ip_in_next_cidr(cidr: str) -> str:
     return str(IPv4Address(int(IPv4Network(cidr)[-1]) + 1))
 
 
-def break_down_to_desired_prefix(cidrs: list[str], prefix: int) -> list[str]:
-    for cidr in cidrs:
-        if get_prefix(cidr) > prefix:
-            messages = [
-                f"Desired prefix ({prefix}) is incompatible with the available CIDR blocks! ",
-                (
-                    f"Encountered a CIDR whose prefix is {get_prefix(cidr)}, which is higher than  "
-                    f"{prefix}. Offending CIDR: {cidr}"
-                ),
-                "Run the command again without the --prefix argument to see the full list."
-            ]
-            for message in messages:
-                print(message, file=sys.stderr)
-            exit(1)
+def break_down_to_desired_prefix(cidrs: list[str], prefix: int, json_output: bool) -> list[str]:
+    filtered_cidrs = [cidr for cidr in cidrs if get_prefix(cidr) <= prefix]
+    filtered_count = len(cidrs) - len(filtered_cidrs)
+
+    if filtered_count > 0 and not json_output:
+        if filtered_count == 1:
+            print((
+                f"Note: skipping {filtered_count} CIDR because its prefix is larger than the "
+                f"requested prefix ({prefix})."
+            ))
+        else:
+            print((
+                f"Note: skipping {filtered_count} CIDRs because their prefixes are larger than the "
+                f"requested prefix ({prefix})."
+            ))
+        print()
 
     ret = []
-    for cidr in cidrs:
+    for cidr in filtered_cidrs:
         for sub in IPv4Network(cidr).subnets(new_prefix=prefix):
             ret.append(get_cidr(sub))
 
