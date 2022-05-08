@@ -73,7 +73,7 @@ def main() -> None:
         subnet_cidr_gaps[vpc_name] = utilities.find_subnet_holes(vpc_cidr, subnet_cidrs)
         if arguments.get("prefix") is not None:
             subnet_cidr_gaps[vpc_name] = utilities.break_down_to_desired_prefix(
-                subnet_cidr_gaps[vpc_name], arguments["prefix"]
+                subnet_cidr_gaps[vpc_name], arguments["prefix"], arguments["json"]
             )
 
     sorted_data: dict[str, list[str]] = {

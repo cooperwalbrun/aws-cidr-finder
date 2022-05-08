@@ -27,6 +27,8 @@ VPC setup in AWS:
   * `172.31.48.0/20`
   * `172.31.64.0/20`
   * `172.31.80.0/20`
+* An [AWS CLI profile](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html)
+  named `myprofile`
 
 `aws-cidr-finder` allows you to quickly compute the CIDRs that you still have available in the VPC
 without having to do a lot of annoying/tedious octet math. If we issue this command:
@@ -81,15 +83,28 @@ Total                 40960
 ```
 
 With the `--prefix` argument, we can now query our available network space to our desired level of
-detail, as long as we do not specify a smaller prefix than the largest prefix in the original list.
-For example:
+detail. Note that if we specify a `--prefix` with a value lower than any of the prefixes in the
+originally-returned list, those CIDRs will be skipped. For example, if we run the following:
+
+```bash
+aws-cidr-finder --profile myprofile --prefix 18
+```
+
+We should see this output:
 
 ```
-$ aws-cidr-finder --profile myprofile --prefix 18
-Desired prefix (18) is incompatible with the available CIDR blocks!
-Encountered a CIDR whose prefix is 19, which is higher than 18. Offending CIDR: 172.31.96.0/19
-Run the command again without the --prefix argument to see the full list.
+Note: skipping 1 CIDR because its prefix is larger than the requested prefix (18).
+
+Here are the available CIDR blocks in the 'Hello World' VPC:
+CIDR               IP Count
+---------------  ----------
+172.31.128.0/18       16384
+172.31.192.0/18       16384
+Total                 32768
 ```
+
+The CIDR that was skipped was the `172.31.96.0/19` CIDR because it is impossible to convert a `/19`
+CIDR into one or more `/18` CIDRs.
 
 ## Installation
 
@@ -102,10 +117,11 @@ pip install aws-cidr-finder
 
 ## Configuration
 
-All that needs to be configured in order to use this CLI is an AWS profile or keypair. The former
-may be specified using the `--profile` argument on the CLI, while the keypair must be specified in
-environment variables. If both are available simultaneously, `aws-cidr-finder` will prefer the
-profile.
+All that needs to be configured in order to use this CLI is an
+[AWS CLI profile](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) or
+a keypair. The former may be specified using the `--profile` argument on the CLI, while the keypair
+must be specified in environment variables. If both are available simultaneously, `aws-cidr-finder`
+will prefer the profile.
 
 The environment variables for the keypair approach are `AWS_ACCESS_KEY_ID` and
 `AWS_SECRET_ACCESS_KEY` (the same values Boto uses).
