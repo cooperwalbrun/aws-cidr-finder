@@ -2,7 +2,7 @@ import abc
 
 
 # This is an interface to provide an abstraction over common functionality between IPv4 and IPv6
-# support in this module
+# support in this application
 class CIDREngine(abc.ABC):
     @staticmethod
     def is_cidr_inside(parent_cidr: str, child_cidr: str) -> bool:
@@ -21,5 +21,5 @@ class CIDREngine(abc.ABC):
         pass
 
     @staticmethod
-    def break_down_to_desired_prefix(cidrs: list[str], prefix: int, json_output: bool) -> list[str]:
+    def break_down_to_desired_prefix(cidrs: list[str], prefix: int) -> tuple[list[str], list[str]]:
         pass

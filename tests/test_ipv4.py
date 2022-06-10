@@ -1,7 +1,7 @@
 from typing import Any
 
 from aws_cidr_finder import ipv4
-from aws_cidr_finder.ipv4 import IPv4CIDRFinder
+from aws_cidr_finder.ipv4 import IPv4CIDREngine
 
 
 def _assert_lists_equal(actual: list[Any], expected: list[Any]) -> None:
@@ -42,7 +42,7 @@ def test_get_previous_cidr_with_prefix() -> None:
         ("172.0.0.2/32", 31, "172.0.0.0/31"),
         ("172.0.0.2/32", 32, "172.0.0.1/32"),
         ("172.0.32.0/20", 19, "172.0.0.0/19"),
-        ("172.0.32.0/20", 21, None)  # Using a prefix that is higher than the given one
+        ("172.0.32.0/20", 21, None)  # Requesting a prefix that is higher than the given one
     ]
     # yapf: enable
 
@@ -56,7 +56,7 @@ def test_get_next_cidr_with_prefix() -> None:
         ("172.0.0.2/32", 31, "172.0.0.4/31"),
         ("172.0.0.2/32", 32, "172.0.0.3/32"),
         ("172.0.32.0/20", 19, "172.0.64.0/19"),
-        ("172.0.32.0/20", 21, None)  # Using a prefix that is higher than the given one
+        ("172.0.32.0/20", 21, None)  # Requesting a prefix that is higher than the given one
     ]
     # yapf: enable
 
@@ -87,28 +87,32 @@ def test_cidrs_are_adjacent() -> None:
 def test_break_down_to_desired_prefix() -> None:
     # yapf: disable
     test_cases = [
+        # Test 1
         ([], 7,
          []),
+        # Test 2
         (["0.0.0.0/0"], 2,
          ["0.0.0.0/2", "64.0.0.0/2", "128.0.0.0/2", "192.0.0.0/2"]),
+        # Test 3
         (["172.31.96.0/19", "172.31.128.0/17"], 17,
          ["172.31.128.0/17"]),
+        # Test 4 - tests requesting a prefix that would result in too many CIDRs
+        (["172.31.96.0/16"], 32,
+         []),
+        # Test 5
         (["172.31.96.0/19", "172.31.128.0/17"], 12,
          [])
     ]
     # yapf: enable
 
     for cidrs, prefix, expected in test_cases:
-        for json_output in [True, False]:
-            actual = IPv4CIDRFinder.break_down_to_desired_prefix(cidrs, prefix, json_output)
-            _assert_lists_equal(actual, expected)
+        actual = IPv4CIDREngine.break_down_to_desired_prefix(cidrs, prefix)
+        _assert_lists_equal(actual[0], expected)
 
-            reversed = cidrs.copy()
-            reversed.reverse()  # To assert that order is irrelevant
-            actual_reverse = IPv4CIDRFinder.break_down_to_desired_prefix(
-                reversed, prefix, json_output
-            )
-            _assert_lists_equal(actual_reverse, expected)
+        reversed = cidrs.copy()
+        reversed.reverse()  # To assert that order is irrelevant
+        actual_reverse = IPv4CIDREngine.break_down_to_desired_prefix(reversed, prefix)
+        _assert_lists_equal(actual_reverse[0], expected)
 
 
 def test_find_subnet_holes() -> None:
@@ -133,10 +137,10 @@ def test_find_subnet_holes() -> None:
     # yapf: enable
 
     for vpc_cidr, cidrs, expected in test_cases:
-        actual = IPv4CIDRFinder.find_subnet_holes(vpc_cidr, cidrs)
+        actual = IPv4CIDREngine.find_subnet_holes(vpc_cidr, cidrs)
         _assert_lists_equal(actual, expected)
 
         reversed = cidrs.copy()
         reversed.reverse()  # To assert that order is irrelevant
-        actual_reverse = IPv4CIDRFinder.find_subnet_holes(vpc_cidr, reversed)
+        actual_reverse = IPv4CIDREngine.find_subnet_holes(vpc_cidr, reversed)
         _assert_lists_equal(actual_reverse, expected)

@@ -2,6 +2,11 @@ from typing import Optional
 
 
 class VPC:
+    """
+    This class exists to serve an intermediate representation of VPC information originating from
+    AWS itself (Boto). Instances of this class are always destined to be converted into instances of
+    the SingleCIDRVPC class.
+    """
     def __init__(self, *, id: str, name: Optional[str], cidrs: list[str], subnets: list[str]):
         self.id = id
         self.name = name

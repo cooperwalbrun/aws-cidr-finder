@@ -24,11 +24,11 @@ def _cidrs_are_adjacent(cidr1: str, cidr2: str) -> bool:
 
 
 def _get_first_ip_in_next_cidr(cidr: str) -> str:
-    return str(IPv4Address(int(IPv4Network(cidr)[-1]) + 1))
+    return IPv4Address(int(IPv4Network(cidr)[-1]) + 1).compressed
 
 
 def _get_last_ip_in_previous_cidr(cidr: str) -> str:
-    return str(IPv4Address(int(IPv4Network(cidr)[0]) - 1))
+    return IPv4Address(int(IPv4Network(cidr)[0]) - 1).compressed
 
 
 def _get_encapsulating_cidr_with_prefix(ip_address: str, desired_prefix: int) -> str:
@@ -109,27 +109,26 @@ class IPv4CIDREngine(CIDREngine):
         return IPv4CIDREngine.sort_cidrs(ret)
 
     @staticmethod
-    def break_down_to_desired_prefix(cidrs: list[str], prefix: int, json_output: bool) -> list[str]:
-        filtered_cidrs = [cidr for cidr in cidrs if utilities.get_prefix(cidr) <= prefix]
-
-        filtered_count = len(cidrs) - len(filtered_cidrs)
-
-        if filtered_count > 0 and not json_output:
-            if filtered_count == 1:
-                print((
-                    f"Note: skipping {filtered_count} CIDR because its prefix is larger than the "
-                    f"requested prefix ({prefix})."
-                ))
-            else:
-                print((
-                    f"Note: skipping {filtered_count} CIDRs because their prefixes are larger than "
-                    f"the requested prefix ({prefix})."
-                ))
-            print()
-
+    def break_down_to_desired_prefix(cidrs: list[str], prefix: int) -> tuple[list[str], list[str]]:
         ret = []
-        for cidr in filtered_cidrs:
+        messages = []
+        for cidr in cidrs:
+            old_prefix = utilities.get_prefix(cidr)
+            if old_prefix > prefix:
+                messages.append((
+                    f"Note: skipping the CIDR '{cidr}' because its prefix ({old_prefix}) is larger "
+                    f"than the requested prefix ({prefix})"
+                ))
+                continue
+            elif prefix - old_prefix > 9:
+                messages.append((
+                    f"Warning: skipping the CIDR '{cidr}' because its prefix is only {old_prefix} "
+                    f"and converting it to a list of CIDRs with a prefix of {prefix} will result "
+                    f"in a list containing {2**(prefix-old_prefix)} CIDRs!"
+                ))
+                continue
+
             for sub in IPv4Network(cidr).subnets(new_prefix=prefix):
                 ret.append(_get_cidr(sub))
 
-        return ret
+        return ret, messages

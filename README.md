@@ -8,9 +8,9 @@
 
 ## Overview
 
-`aws-cidr-finder` is a Python CLI tool which finds unused CIDR blocks (IPv4 only currently) in your
-AWS VPCs and outputs them to STDOUT. It is very simple, but can be quite useful for users who manage
-many subnets across one or more VPCs.
+`aws-cidr-finder` is a Python CLI tool which finds unused CIDR blocks (supports both IPv4 and IPv6)
+in your AWS VPCs and outputs them to STDOUT. It is very simple, but can be quite useful for users
+who manage many subnets across one or more VPCs.
 
 Use `aws-cidr-finder -h` to see command options.
 
@@ -93,7 +93,7 @@ aws-cidr-finder --profile myprofile --prefix 18
 We should see this output:
 
 ```
-Note: skipping 1 CIDR because its prefix is larger than the requested prefix (18).
+Note: skipping CIDR '172.31.96.0/19' because its prefix (19) is larger than the requested prefix (18)
 
 Here are the available CIDR blocks in the 'Hello World' VPC (VPC CIDR block '172.31.0.0/16'):
 CIDR               IP Count
