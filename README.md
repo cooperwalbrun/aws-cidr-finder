@@ -40,7 +40,7 @@ aws-cidr-finder --profile myprofile
 We should see this output:
 
 ```
-Here are the available CIDR blocks in the 'Hello World' VPC:
+Here are the available CIDR blocks in the 'Hello World' VPC (VPC CIDR block '172.31.0.0/16'):
 CIDR               IP Count
 ---------------  ----------
 172.31.96.0/19         8192
@@ -66,7 +66,7 @@ aws-cidr-finder --profile myprofile --prefix 20
 Now, the expected output should look something like this:
 
 ```
-Here are the available CIDR blocks in the 'Hello World' VPC:
+Here are the available CIDR blocks in the 'Hello World' VPC (VPC CIDR block '172.31.0.0/16'):
 CIDR               IP Count
 ---------------  ----------
 172.31.96.0/20         4096
@@ -95,7 +95,7 @@ We should see this output:
 ```
 Note: skipping 1 CIDR because its prefix is larger than the requested prefix (18).
 
-Here are the available CIDR blocks in the 'Hello World' VPC:
+Here are the available CIDR blocks in the 'Hello World' VPC (VPC CIDR block '172.31.0.0/16'):
 CIDR               IP Count
 ---------------  ----------
 172.31.128.0/18       16384

@@ -3,7 +3,11 @@ import abc
 
 # This is an interface to provide an abstraction over common functionality between IPv4 and IPv6
 # support in this module
-class CIDRFinder(abc.ABC):
+class CIDREngine(abc.ABC):
+    @staticmethod
+    def is_cidr_inside(parent_cidr: str, child_cidr: str) -> bool:
+        pass
+
     @staticmethod
     def sort_cidrs(cidrs: list[str]) -> list[str]:
         pass

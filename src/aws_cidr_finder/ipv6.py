@@ -1,9 +1,13 @@
-from aws_cidr_finder.cidr_finder import CIDRFinder
+from aws_cidr_finder.engine import CIDREngine
 
 # TODO
 
 
-class IPv6CIDRFinder(CIDRFinder):
+class IPv6CIDREngine(CIDREngine):
+    @staticmethod
+    def is_cidr_inside(parent_cidr: str, child_cidr: str) -> bool:
+        pass
+
     @staticmethod
     def sort_cidrs(cidrs: list[str]) -> list[str]:
         pass

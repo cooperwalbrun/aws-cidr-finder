@@ -3,11 +3,7 @@ from ipaddress import IPv4Network, IPv4Address, AddressValueError
 from typing import Optional
 
 from aws_cidr_finder import utilities
-from aws_cidr_finder.cidr_finder import CIDRFinder
-
-
-def _is_cidr_inside(parent_cidr: str, child_cidr: str) -> bool:
-    return IPv4Network(child_cidr).subnet_of(IPv4Network(parent_cidr))
+from aws_cidr_finder.engine import CIDREngine
 
 
 def _get_cidr(network: IPv4Network) -> str:
@@ -69,7 +65,11 @@ def _get_next_cidr_with_prefix(cidr: str, desired_prefix: int) -> Optional[str]:
             return None
 
 
-class IPv4CIDRFinder(CIDRFinder):
+class IPv4CIDREngine(CIDREngine):
+    @staticmethod
+    def is_cidr_inside(parent_cidr: str, child_cidr: str) -> bool:
+        return IPv4Network(child_cidr).subnet_of(IPv4Network(parent_cidr))
+
     @staticmethod
     def sort_cidrs(cidrs: list[str]) -> list[str]:
         ret = cidrs.copy()
@@ -92,7 +92,7 @@ class IPv4CIDRFinder(CIDRFinder):
             for new_prefix in range(1, utilities.get_prefix(cidr) + 1):
                 candidate = _get_previous_cidr_with_prefix(cidr, new_prefix)
                 if candidate is not None and \
-                        _is_cidr_inside(vpc_cidr, candidate) and \
+                        IPv4CIDREngine.is_cidr_inside(vpc_cidr, candidate) and \
                         not _cidr_overlaps_any(subnet_cidrs, candidate) and \
                         not _cidr_overlaps_any(ret, candidate):
                     ret.append(candidate)
@@ -101,12 +101,12 @@ class IPv4CIDRFinder(CIDRFinder):
             for new_prefix in range(1, utilities.get_prefix(cidr) + 1):
                 candidate = _get_next_cidr_with_prefix(cidr, new_prefix)
                 if candidate is not None and \
-                        _is_cidr_inside(vpc_cidr, candidate) and \
+                        IPv4CIDREngine.is_cidr_inside(vpc_cidr, candidate) and \
                         not _cidr_overlaps_any(subnet_cidrs, candidate) and \
                         not _cidr_overlaps_any(ret, candidate):
                     ret.append(candidate)
 
-        return IPv4CIDRFinder.sort_cidrs(ret)
+        return IPv4CIDREngine.sort_cidrs(ret)
 
     @staticmethod
     def break_down_to_desired_prefix(cidrs: list[str], prefix: int, json_output: bool) -> list[str]:
