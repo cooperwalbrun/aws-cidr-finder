@@ -91,17 +91,22 @@ def main() -> None:
             output[vpc.readable_name][vpc.cidr] = engine.sort_cidrs(subnet_cidrs)
         print(json.dumps(output))
     else:
-        for vpc, subnet_cidrs in subnet_cidr_gaps.items():
-            sorted_cidrs = engine.sort_cidrs(subnet_cidrs)
-            print((
-                f"Here are the available CIDR blocks in the '{vpc.readable_name}' VPC (VPC CIDR "
-                f"block '{vpc.cidr}'):"
-            ))
-            table_data = []
-            for cidr in sorted_cidrs:
-                table_data.append([cidr, engine.get_ip_count(cidr)])
-            table_data.append(["Total", sum([engine.get_ip_count(cidr) for cidr in sorted_cidrs])])
-            print(tabulate(table_data, headers=["CIDR", "IP Count"]))
+        if len(subnet_cidr_gaps) == 0:
+            print(f"No available {'IPv6' if ipv6 else 'IPv4'} CIDR blocks were found in any VPC.")
+        else:
+            for vpc, subnet_cidrs in subnet_cidr_gaps.items():
+                sorted_cidrs = engine.sort_cidrs(subnet_cidrs)
+                print((
+                    f"Here are the available CIDR blocks in the '{vpc.readable_name}' VPC (VPC "
+                    f"CIDR block '{vpc.cidr}'):"
+                ))
+                table_data = []
+                for cidr in sorted_cidrs:
+                    table_data.append([cidr, engine.get_ip_count(cidr)])
+                table_data.append([
+                    "Total", sum([engine.get_ip_count(cidr) for cidr in sorted_cidrs])
+                ])
+                print(tabulate(table_data, headers=["CIDR", "IP Count"]))
 
 
 if __name__ == "__main__":

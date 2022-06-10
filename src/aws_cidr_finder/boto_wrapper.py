@@ -18,13 +18,13 @@ def _parse_vpc_cidrs(vpc: dict[str, Any], *, ipv6: bool) -> list[str]:
     if ipv6:
         return [
             association["Ipv6CidrBlock"]
-            for association in vpc["Ipv6CidrBlockAssociationSet"]
+            for association in vpc.get("Ipv6CidrBlockAssociationSet", [])
             if association["Ipv6CidrBlockState"]["State"] == "associated"
         ]
     else:
         return [
             association["CidrBlock"]
-            for association in vpc["CidrBlockAssociationSet"]
+            for association in vpc.get("CidrBlockAssociationSet", [])
             if association["CidrBlockState"]["State"] == "associated"
         ]
 
@@ -34,11 +34,11 @@ def _parse_subnet_cidrs(subnets: list[dict[str, Any]], *, ipv6: bool) -> list[st
         return [
             association["Ipv6CidrBlock"]
             for subnet in subnets
-            for association in subnet["Ipv6CidrBlockAssociationSet"]
+            for association in subnet.get("Ipv6CidrBlockAssociationSet", [])
             if association["Ipv6CidrBlockState"]["State"] == "associated"
         ]
     else:
-        return [subnet["CidrBlock"] for subnet in subnets]
+        return [subnet["CidrBlock"] for subnet in subnets if "CidrBlock" in subnet]
 
 
 class BotoWrapper:  # pragma: no cover
