@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.2.0 - 2022-06-11
+
+### Added
+
+* Implemented support for IPv6 VPCs via the `--ipv6` CLI flag (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
+### Changed
+
+* The structure of the JSON output when specifying the `--json` CLI flag now includes VPC names, VPC CIDRs, and informational messages (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
+### Fixed
+
+* Gracefully handle situations where the requested `--prefix` causes a huge number of CIDRs to be returned (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.1.2 - 2022-05-08
 
 ### Changed
