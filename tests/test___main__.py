@@ -36,7 +36,9 @@ def test_main_json_output(mocker: MockerFixture) -> None:
     ]
     mocker.patch("aws_cidr_finder.__main__.BotoWrapper", return_value=boto_wrapper_mock)
     mocker.patch("aws_cidr_finder.__main__.BotoWrapper", return_value=boto_wrapper_mock)
-    mocker.patch("aws_cidr_finder.__main__._get_arguments", return_value=["--json"])
+    mocker.patch(
+        "aws_cidr_finder.__main__._get_arguments", return_value=["--json", "--prefix", "20"]
+    )
     print_mock: MagicMock = mocker.patch("builtins.print")
 
     __main__.main()
