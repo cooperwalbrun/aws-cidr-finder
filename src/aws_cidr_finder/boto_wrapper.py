@@ -15,6 +15,8 @@ def _get_vpc_name(tags: list[dict[str, str]]) -> Optional[str]:
 
 
 def _parse_vpc_cidrs(vpc: dict[str, Any], *, ipv6: bool) -> list[str]:
+    # Note: the structure we are crawling below is documented here:
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.describe_vpcs
     if ipv6:
         return [
             association["Ipv6CidrBlock"]
