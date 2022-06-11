@@ -19,19 +19,21 @@ def _cidrs_are_adjacent(cidr1: str, cidr2: str) -> bool:
 def _get_first_ip_in_next_cidr(cidr: str) -> str:
     # Python needs a little "help" inferring which type of IP address an integer value represents,
     # thus we have the manual check below
-    if isinstance(ip_network(cidr), IPv4Network):
-        return IPv4Address(int(ip_network(cidr)[-1]) + 1).compressed
+    network = ip_network(cidr)
+    if isinstance(network, IPv4Network):
+        return IPv4Address(int(network[-1]) + 1).compressed
     else:
-        return IPv6Address(int(ip_network(cidr)[-1]) + 1).compressed
+        return IPv6Address(int(network[-1]) + 1).compressed
 
 
 def _get_last_ip_in_previous_cidr(cidr: str) -> str:
     # Python needs a little "help" inferring which type of IP address an integer value represents,
     # thus we have the manual check below
-    if isinstance(ip_network(cidr), IPv4Network):
-        return IPv4Address(int(ip_network(cidr)[0]) - 1).compressed
+    network = ip_network(cidr)
+    if isinstance(network, IPv4Network):
+        return IPv4Address(int(network[0]) - 1).compressed
     else:
-        return IPv6Address(int(ip_network(cidr)[0]) - 1).compressed
+        return IPv6Address(int(network[0]) - 1).compressed
 
 
 def _get_encapsulating_cidr_with_prefix(ip: str, desired_prefix: int) -> str:
