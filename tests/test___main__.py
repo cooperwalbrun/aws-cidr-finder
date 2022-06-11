@@ -44,7 +44,7 @@ def test_main_json_output(mocker: MockerFixture) -> None:
     print_mock.assert_has_calls([
         call(
             json.dumps({
-                "aws_cidr_finder_messages": [],
+                "aws-cidr-finder-messages": [],
                 "vpcs": {
                     "test-vpc": {
                         "172.31.0.0/19": ["172.31.16.0/20"]

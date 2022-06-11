@@ -83,7 +83,7 @@ def main() -> None:
             messages = m
 
     if arguments["json"]:
-        output = {"aws_cidr_finder_messages": messages, "vpcs": {}}
+        output = {"aws-cidr-finder-messages": messages, "vpcs": {}}
         for vpc, subnet_cidrs in subnet_cidr_gaps.items():
             if vpc.readable_name not in output["vpcs"]:
                 output["vpcs"][vpc.readable_name] = {}
