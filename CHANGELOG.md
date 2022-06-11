@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+Nothing currently!
+
+## v0.2.0 - 2022-06-11
+
 ### Added
 
 * Implemented support for IPv6 VPCs via the `--ipv6` CLI flag (by [@cooperwalbrun](https://github.com/cooperwalbrun))
