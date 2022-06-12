@@ -1,7 +1,6 @@
 from typing import Any
 
-from aws_cidr_finder import ipv4
-from aws_cidr_finder.ipv4 import IPv4CIDREngine
+from aws_cidr_finder import core
 
 
 def _assert_lists_equal(actual: list[Any], expected: list[Any]) -> None:
@@ -19,7 +18,7 @@ def test_get_first_ip_in_next_cidr() -> None:
     # yapf: enable
 
     for cidr, expected in test_cases:
-        assert ipv4._get_first_ip_in_next_cidr(cidr) == expected
+        assert core._get_first_ip_in_next_cidr(cidr) == expected
 
 
 def test_get_last_ip_in_previous_cidr() -> None:
@@ -33,7 +32,7 @@ def test_get_last_ip_in_previous_cidr() -> None:
     # yapf: enable
 
     for cidr, expected in test_cases:
-        assert ipv4._get_last_ip_in_previous_cidr(cidr) == expected
+        assert core._get_last_ip_in_previous_cidr(cidr) == expected
 
 
 def test_get_previous_cidr_with_prefix() -> None:
@@ -47,7 +46,7 @@ def test_get_previous_cidr_with_prefix() -> None:
     # yapf: enable
 
     for cidr, prefix, expected in test_cases:
-        assert ipv4._get_previous_cidr_with_prefix(cidr, prefix) == expected
+        assert core._get_previous_cidr_with_prefix(cidr, prefix) == expected
 
 
 def test_get_next_cidr_with_prefix() -> None:
@@ -61,7 +60,7 @@ def test_get_next_cidr_with_prefix() -> None:
     # yapf: enable
 
     for cidr, prefix, expected in test_cases:
-        assert ipv4._get_next_cidr_with_prefix(cidr, prefix) == expected
+        assert core._get_next_cidr_with_prefix(cidr, prefix) == expected
 
 
 def test_cidrs_are_adjacent() -> None:
@@ -71,8 +70,8 @@ def test_cidrs_are_adjacent() -> None:
         ("172.31.224.0/20", "172.31.240.0/32"),
     ]
     for cidr1, cidr2 in true_test_cases:
-        assert ipv4._cidrs_are_adjacent(cidr1, cidr2)
-        assert ipv4._cidrs_are_adjacent(cidr2, cidr1)
+        assert core._cidrs_are_adjacent(cidr1, cidr2)
+        assert core._cidrs_are_adjacent(cidr2, cidr1)
 
     false_test_cases = [
         ("172.31.208.0/20", "172.31.240.0/20"),
@@ -80,8 +79,8 @@ def test_cidrs_are_adjacent() -> None:
         ("172.31.224.0/20", "172.31.240.1/32"),
     ]
     for cidr1, cidr2 in false_test_cases:
-        assert not ipv4._cidrs_are_adjacent(cidr1, cidr2)
-        assert not ipv4._cidrs_are_adjacent(cidr2, cidr1)
+        assert not core._cidrs_are_adjacent(cidr1, cidr2)
+        assert not core._cidrs_are_adjacent(cidr2, cidr1)
 
 
 def test_break_down_to_desired_prefix() -> None:
@@ -106,12 +105,12 @@ def test_break_down_to_desired_prefix() -> None:
     # yapf: enable
 
     for cidrs, prefix, expected in test_cases:
-        actual = IPv4CIDREngine.break_down_to_desired_prefix(cidrs, prefix)
+        actual = core.break_down_to_desired_prefix(cidrs, prefix)
         _assert_lists_equal(actual[0], expected)
 
         reversed = cidrs.copy()
         reversed.reverse()  # To assert that order is irrelevant
-        actual_reverse = IPv4CIDREngine.break_down_to_desired_prefix(reversed, prefix)
+        actual_reverse = core.break_down_to_desired_prefix(reversed, prefix)
         _assert_lists_equal(actual_reverse[0], expected)
 
 
@@ -137,10 +136,10 @@ def test_find_subnet_holes() -> None:
     # yapf: enable
 
     for vpc_cidr, cidrs, expected in test_cases:
-        actual = IPv4CIDREngine.find_subnet_holes(vpc_cidr, cidrs)
+        actual = core.find_subnet_holes(vpc_cidr, cidrs)
         _assert_lists_equal(actual, expected)
 
         reversed = cidrs.copy()
         reversed.reverse()  # To assert that order is irrelevant
-        actual_reverse = IPv4CIDREngine.find_subnet_holes(vpc_cidr, reversed)
+        actual_reverse = core.find_subnet_holes(vpc_cidr, reversed)
         _assert_lists_equal(actual_reverse, expected)

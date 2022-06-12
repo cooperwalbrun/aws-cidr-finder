@@ -5,12 +5,9 @@ from typing import Any
 
 from tabulate import tabulate
 
-from aws_cidr_finder import utilities
+from aws_cidr_finder import core
 from aws_cidr_finder.boto_wrapper import BotoWrapper
 from aws_cidr_finder.custom_types import SingleCIDRVPC
-from aws_cidr_finder.engine import CIDREngine
-from aws_cidr_finder.ipv4 import IPv4CIDREngine
-from aws_cidr_finder.ipv6 import IPv6CIDREngine
 
 _parser: ArgumentParser = ArgumentParser(
     description="A CLI tool for finding unused CIDR blocks in AWS VPCs."
@@ -63,20 +60,19 @@ def main() -> None:
     boto = BotoWrapper(arguments.get("PROFILE"), arguments.get("REGION"))
 
     ipv6: bool = arguments["ipv6"]
-    engine: CIDREngine = IPv6CIDREngine() if ipv6 else IPv4CIDREngine()
 
     subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]] = {}
     messages = []
 
-    for vpc in utilities.split_out_individual_cidrs(boto.get_vpc_data(ipv6=ipv6), engine):
+    for vpc in core.split_out_individual_cidrs(boto.get_vpc_data(ipv6=ipv6)):
         # yapf: disable
-        subnet_cidr_gaps[vpc] = engine.find_subnet_holes(
+        subnet_cidr_gaps[vpc] = core.find_subnet_holes(
             vpc.cidr,
             vpc.subnets
         )
         # yapf: enable
         if arguments.get("prefix") is not None:
-            converted_cidrs, m = engine.break_down_to_desired_prefix(
+            converted_cidrs, m = core.break_down_to_desired_prefix(
                 subnet_cidr_gaps[vpc], arguments["prefix"]
             )
             subnet_cidr_gaps[vpc] = converted_cidrs
@@ -87,7 +83,7 @@ def main() -> None:
         for vpc, subnet_cidrs in subnet_cidr_gaps.items():
             if vpc.readable_name not in output["vpcs"]:
                 output["vpcs"][vpc.readable_name] = {}
-            output["vpcs"][vpc.readable_name][vpc.cidr] = engine.sort_cidrs(subnet_cidrs)
+            output["vpcs"][vpc.readable_name][vpc.cidr] = core.sort_cidrs(subnet_cidrs)
         print(json.dumps(output))
     else:
         if len(subnet_cidr_gaps) == 0:
@@ -99,16 +95,16 @@ def main() -> None:
                 print()
 
             for vpc, subnet_cidrs in subnet_cidr_gaps.items():
-                sorted_cidrs = engine.sort_cidrs(subnet_cidrs)
+                sorted_cidrs = core.sort_cidrs(subnet_cidrs)
                 print((
                     f"Here are the available CIDR blocks in the '{vpc.readable_name}' VPC (VPC "
                     f"CIDR block '{vpc.cidr}'):"
                 ))
                 table_data = []
                 for cidr in sorted_cidrs:
-                    table_data.append([cidr, engine.get_ip_count(cidr)])
+                    table_data.append([cidr, core.get_ip_count(cidr)])
                 table_data.append([
-                    "Total", sum([engine.get_ip_count(cidr) for cidr in sorted_cidrs])
+                    "Total", sum([core.get_ip_count(cidr) for cidr in sorted_cidrs])
                 ])
                 print(tabulate(table_data, headers=["CIDR", "IP Count"]))
 

@@ -57,8 +57,9 @@ pip install -e .[testing]     # Unit testing purposes only
      `setup.cfg`.
    * If it is a **production/runtime** dependency, add it under `install_requires =` in
      `setup.cfg`. Unless you know lower versions will work too, specify the version you installed
-     as a lower bound (e.g. `somemodule>=X.Y.Z`). Either way, be sure to specify a lower bound (and
-     an upper bound, if applicable).
+     as a lower bound (e.g. `somemodule>=X.Y.Z`). It is also recommended to specify an upper bound
+     to avoid situations where a breaking change was introduced in a major version upgrade (e.g.
+     `somemodule>=X.Y.Z,<A`)
 
 ### Updating Dependencies
 
