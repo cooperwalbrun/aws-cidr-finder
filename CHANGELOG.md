@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+Nothing currently!
+
+## v0.2.1 - 2022-06-11
+
 ### Changed
 
 * Refactored the code to reduce code duplication between the IPv4 and IPv6 functionalities (by [@cooperwalbrun](https://github.com/cooperwalbrun))
