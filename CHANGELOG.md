@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.2.2 - 2022-06-13
+
+### Changed
+
+* CIDR blocks that are in an `associating` state (instead of just the `associated` state) will now be considered in this CLI's functionality (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.2.1 - 2022-06-11
 
 ### Changed
