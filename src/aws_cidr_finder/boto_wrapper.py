@@ -21,13 +21,13 @@ def _parse_vpc_cidrs(vpc: dict[str, Any], *, ipv6: bool) -> list[str]:
         return [
             association["Ipv6CidrBlock"]
             for association in vpc.get("Ipv6CidrBlockAssociationSet", [])
-            if association["Ipv6CidrBlockState"]["State"] == "associated"
+            if association["Ipv6CidrBlockState"]["State"] in ["associated", "associating"]
         ]
     else:
         return [
             association["CidrBlock"]
             for association in vpc.get("CidrBlockAssociationSet", [])
-            if association["CidrBlockState"]["State"] == "associated"
+            if association["CidrBlockState"]["State"] in ["associated", "associating"]
         ]
 
 
