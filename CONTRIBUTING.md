@@ -92,8 +92,8 @@ in a virtual environment if running tests via `tox`. Then, run the corresponding
 project's root directory:
 
 ```properties
-python setup.py test # Run unit tests using your current virtual environment's Python interpreter
-tox                  # Run unit tests using tox (requires that you have the necessary Python interpreters on your machine)
+python -m pytest --cov # Run unit tests using your current virtual environment's Python interpreter
+tox                    # Run unit tests using tox (requires that you have the necessary Python interpreters on your machine)
 ```
 
 ## Running aws-cidr-finder Locally
