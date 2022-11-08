@@ -6,17 +6,17 @@ on:
       - master
 jobs:
   unit-test:
-    name: Unit Test and Code Coverage
+    name: Unit Test with Code Coverage Analysis
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 4
       matrix:
-        python-version: ["3.10"]
+        python-version: ["3.10", "3.11"]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies

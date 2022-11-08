@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.2.4 - 2022-11-08
+
+### Added
+
+* Added support for Python 3.11 to the pipeline and project configuration (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.2.3 - 2022-10-12
 
 ### Changed
