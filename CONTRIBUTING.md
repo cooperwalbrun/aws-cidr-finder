@@ -7,9 +7,9 @@
    3. [Updating Python in the Virtual Environment](#updating-python-in-the-virtual-environment)
 4. [Unit Testing](#unit-testing)
 5. [Running aws-cidr-finder Locally](#running-aws-cidr-finder-locally)
-6. [Formatting Code](#formatting-code)
+5. [Code Policy](#code-policy)
    1. [YAPF](#yapf)
-   2. [Type Annotations](#type-annotations)
+   2. [Typing](#typing)
    3. [Imports](#imports)
 7. [Changelog](#changelog)
 
@@ -105,7 +105,7 @@ as the following (`--profile` argument given for demonstrative purposes):
 python -m aws_cidr_finder --profile myprofile
 ```
 
-## Formatting Code
+## Code Policy
 
 ### YAPF
 
@@ -118,7 +118,7 @@ comments `# yapf: disable` and `# yapf: enable`. Whenever the former appears, th
 afterwards (this project will not tolerate disabling YAPF for large code blocks and/or entire
 files). Disabling YAPF should be done sparingly.
 
-### Type Annotations
+### Typing
 
 In addition to YAPF formatting, code should be appropriately accompanied by type annotations. This
 includes:
@@ -126,6 +126,10 @@ includes:
   an underscore)
 * All method parameters and method return values
 * Any declaration that may have a non-obvious, ambiguous, or otherwise complex type signature
+
+In addition to type annotations, all changes to this project's code are expected to be checked with
+[mypy](https://github.com/python/mypy). To run this check, simply execute the `mypy src` command at
+the root of this project.
 
 ### Imports
 

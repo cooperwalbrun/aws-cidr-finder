@@ -1,20 +1,22 @@
 import os
-from typing import Any, Optional
+from typing import Optional
 
 import boto3
-from botocore.client import BaseClient
+from mypy_boto3_ec2 import EC2Client
+from mypy_boto3_ec2.type_defs import TagTypeDef, VpcTypeDef, DescribeSubnetsResultTypeDef, \
+    SubnetTypeDef
 
 from aws_cidr_finder.custom_types import VPC
 
 
-def _get_vpc_name(tags: list[dict[str, str]]) -> Optional[str]:
+def _get_vpc_name(tags: list[TagTypeDef]) -> Optional[str]:
     for key_value_pair in tags:
         if key_value_pair["Key"] == "Name":
             return key_value_pair["Value"]
     return None
 
 
-def _parse_vpc_cidrs(vpc: dict[str, Any], *, ipv6: bool) -> list[str]:
+def _parse_vpc_cidrs(vpc: VpcTypeDef, *, ipv6: bool) -> list[str]:
     # Note: the structure we are crawling below is documented here:
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.describe_vpcs
     if ipv6:
@@ -31,7 +33,7 @@ def _parse_vpc_cidrs(vpc: dict[str, Any], *, ipv6: bool) -> list[str]:
         ]
 
 
-def _parse_subnet_cidrs(subnets: list[dict[str, Any]], *, ipv6: bool) -> list[str]:
+def _parse_subnet_cidrs(subnets: list[SubnetTypeDef], *, ipv6: bool) -> list[str]:
     # Note: the structure we are crawling below is documented here:
     # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ec2.html#EC2.Client.describe_subnets
     if ipv6:
@@ -55,7 +57,7 @@ class BotoWrapper:  # pragma: no cover
                 aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
                 region_name=region
             )
-        self._client: BaseClient = boto.client("ec2")
+        self._client: EC2Client = boto.client("ec2")
 
     def get_vpc_data(self, *, ipv6: bool) -> list[VPC]:
         vpcs = self._client.describe_vpcs()["Vpcs"]
@@ -70,5 +72,5 @@ class BotoWrapper:  # pragma: no cover
             ) for vpc in vpcs
         ]
 
-    def _get_subnet_cidrs(self, vpc_id: str) -> dict[str, list[dict[str, Any]]]:
+    def _get_subnet_cidrs(self, vpc_id: str) -> DescribeSubnetsResultTypeDef:
         return self._client.describe_subnets(Filters=[{"Name": "vpc-id", "Values": [vpc_id]}])
