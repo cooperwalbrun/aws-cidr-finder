@@ -7,7 +7,7 @@ from tabulate import tabulate
 
 from aws_cidr_finder import core
 from aws_cidr_finder.boto_wrapper import BotoWrapper
-from aws_cidr_finder.custom_types import SingleCIDRVPC
+from aws_cidr_finder.custom_types import SingleCIDRVPC, JSONOutput
 
 _parser: ArgumentParser = ArgumentParser(
     description="A CLI tool for finding unused CIDR blocks in AWS VPCs."
@@ -50,8 +50,8 @@ def _get_arguments() -> list[str]:  # pragma: no cover
 
 
 def _parse_arguments(arguments: list[str]) -> dict[str, Any]:
-    arguments: Namespace = _parser.parse_args(arguments)
-    return vars(arguments)
+    ret: Namespace = _parser.parse_args(arguments)
+    return vars(ret)
 
 
 def main() -> None:
@@ -62,7 +62,7 @@ def main() -> None:
     ipv6: bool = arguments["ipv6"]
 
     subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]] = {}
-    messages = []
+    messages: list[str] = []
 
     for vpc in core.split_out_individual_cidrs(boto.get_vpc_data(ipv6=ipv6)):
         # yapf: disable
@@ -79,7 +79,7 @@ def main() -> None:
             messages = m
 
     if arguments["json"]:
-        output = {"aws-cidr-finder-messages": messages, "vpcs": {}}
+        output: JSONOutput = {"aws-cidr-finder-messages": messages, "vpcs": {}}
         for vpc, subnet_cidrs in subnet_cidr_gaps.items():
             if vpc.readable_name not in output["vpcs"]:
                 output["vpcs"][vpc.readable_name] = {}
@@ -89,8 +89,8 @@ def main() -> None:
         if len(subnet_cidr_gaps) == 0:
             print(f"No available {'IPv6' if ipv6 else 'IPv4'} CIDR blocks were found in any VPC.")
         else:
-            for m in messages:
-                print(m)
+            for msg in messages:
+                print(msg)
             if len(messages) > 0:
                 print()
 

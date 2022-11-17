@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, TypedDict
 
 
 class VPC:
@@ -33,4 +33,10 @@ class SingleCIDRVPC:
 
     def __hash__(self) -> int:
         # This class must be hashable because we use it to key dictionaries
-        return hash(self.id) + hash(self.cidr)
+        return hash((self.id, self.cidr))
+
+
+JSONOutput = TypedDict("JSONOutput", {
+    "aws-cidr-finder-messages": list[str],
+    "vpcs": dict[str, dict[str, list[str]]]
+})

@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.3.0 - 2022-11-16
+
+### Added
+
+* Added project configuration for using `mypy` to statically type-check code during development and in the GitHub Actions pipeline (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+* Implemented proper typing throughout the source code and added a `py.typed` file per PEP 561 (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.2.4 - 2022-11-08
 
 ### Added

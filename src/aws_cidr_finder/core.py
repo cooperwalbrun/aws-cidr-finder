@@ -79,12 +79,12 @@ def _get_next_cidr_with_prefix(cidr: str, desired_prefix: int) -> Optional[str]:
 
 
 def _is_cidr_inside(parent_cidr: str, child_cidr: str) -> bool:
-    return ip_network(child_cidr).subnet_of(ip_network(parent_cidr))
+    return ip_network(child_cidr).subnet_of(ip_network(parent_cidr))  # type: ignore
 
 
 def sort_cidrs(cidrs: list[str]) -> list[str]:
     ret = cidrs.copy()
-    ret.sort(key=cmp_to_key(lambda a, b: ip_network(a).compare_networks(ip_network(b))))
+    ret.sort(key=cmp_to_key(lambda a, b: ip_network(a).compare_networks(ip_network(b))))  # type: ignore
     return ret
 
 
@@ -117,7 +117,7 @@ def find_subnet_holes(vpc_cidr: str, subnet_cidrs: list[str]) -> list[str]:
     if len(subnet_cidrs) == 0:
         return [vpc_cidr]
 
-    ret = []
+    ret: list[str] = []
 
     for cidr in subnet_cidrs:
         # Check on the left of the current CIDR
