@@ -57,7 +57,7 @@ def _parse_arguments(arguments: list[str]) -> dict[str, Any]:
 def main() -> None:
     arguments = _parse_arguments(_get_arguments())
 
-    boto = BotoWrapper(arguments.get("PROFILE"), arguments.get("REGION"))
+    boto = BotoWrapper(profile_name=arguments.get("PROFILE"), region=arguments.get("REGION"))
 
     ipv6: bool = arguments["ipv6"]
 

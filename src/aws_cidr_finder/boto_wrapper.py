@@ -48,7 +48,7 @@ def _parse_subnet_cidrs(subnets: list[SubnetTypeDef], *, ipv6: bool) -> list[str
 
 
 class BotoWrapper:  # pragma: no cover
-    def __init__(self, profile_name: Optional[str], region: Optional[str]):
+    def __init__(self, *, profile_name: Optional[str], region: Optional[str]):
         if profile_name is not None:
             boto = boto3.session.Session(profile_name=profile_name, region_name=region)
         else:

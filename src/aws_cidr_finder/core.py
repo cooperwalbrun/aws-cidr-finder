@@ -148,11 +148,11 @@ def break_down_to_desired_prefix(cidrs: list[str], prefix: int) -> tuple[list[st
         old_prefix = get_prefix(cidr)
         if old_prefix > prefix:
             messages.append((
-                f"Note: skipping the CIDR '{cidr}' because its prefix ({old_prefix}) is larger "
-                f"than the requested prefix ({prefix})"
+                f"Note: skipping the CIDR '{cidr}' because its prefix ({old_prefix}) is "
+                f"numerically greater than the requested prefix ({prefix})"
             ))
             continue
-        elif prefix - old_prefix > 9:
+        elif prefix - old_prefix > 8:
             messages.append((
                 f"Warning: skipping the CIDR '{cidr}' because its prefix is only {old_prefix} "
                 f"and converting it to a list of CIDRs with a prefix of {prefix} will result "

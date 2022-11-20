@@ -16,11 +16,11 @@ Use `aws-cidr-finder -h` to see command options.
 
 ### An Example
 
-It is easiest to see the value of this tool through an example. Pretend that we have the following
-VPC setup in AWS:
+It is easiest to see the value of this tool through an example. Imagine that we have the following
+setup in AWS:
 
 * A VPC whose CIDR is `172.31.0.0/16`, with a `Name` tag of `Hello World`
-* Six subnets in that VPC whose CIDRs are:
+* Six subnets inside that VPC whose CIDRs are:
   * `172.31.0.0/20`
   * `172.31.16.0/20`
   * `172.31.32.0/20`
@@ -93,7 +93,7 @@ aws-cidr-finder --profile myprofile --prefix 18
 We should see this output:
 
 ```
-Note: skipping CIDR '172.31.96.0/19' because its prefix (19) is larger than the requested prefix (18)
+Note: skipping CIDR '172.31.96.0/19' because its prefix (19) is numerically greater than the requested prefix (18)
 
 Here are the available CIDR blocks in the 'Hello World' VPC (VPC CIDR block '172.31.0.0/16'):
 CIDR               IP Count
