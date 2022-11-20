@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.3.1 - 2022-11-20
+
+### Changed
+
+* IPv6 subnets in an `associating` state are now recognized by `aws-cidr-finder` (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.3.0 - 2022-11-16
 
 ### Added
