@@ -22,13 +22,13 @@ def _parse_vpc_cidrs(vpc: VpcTypeDef, *, ipv6: bool) -> list[str]:
     if ipv6:
         return [
             association["Ipv6CidrBlock"]
-            for association in vpc.get("Ipv6CidrBlockAssociationSet", [])
+            for association in vpc["Ipv6CidrBlockAssociationSet"]
             if association["Ipv6CidrBlockState"]["State"] in ["associated", "associating"]
         ]
     else:
         return [
             association["CidrBlock"]
-            for association in vpc.get("CidrBlockAssociationSet", [])
+            for association in vpc["CidrBlockAssociationSet"]
             if association["CidrBlockState"]["State"] in ["associated", "associating"]
         ]
 
@@ -40,8 +40,8 @@ def _parse_subnet_cidrs(subnets: list[SubnetTypeDef], *, ipv6: bool) -> list[str
         return [
             association["Ipv6CidrBlock"]
             for subnet in subnets
-            for association in subnet.get("Ipv6CidrBlockAssociationSet", [])
-            if association["Ipv6CidrBlockState"]["State"] == "associated"
+            for association in subnet["Ipv6CidrBlockAssociationSet"]
+            if association["Ipv6CidrBlockState"]["State"] in ["associated", "associating"]
         ]
     else:
         return [subnet["CidrBlock"] for subnet in subnets if "CidrBlock" in subnet]
