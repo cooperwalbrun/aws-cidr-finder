@@ -1,4 +1,4 @@
-# aws-cidr-finder [![master](https://github.com/cooperwalbrun/aws-cidr-finder/actions/workflows/master.yml/badge.svg)](https://github.com/cooperwalbrun/aws-cidr-finder/actions/workflows/master.yml) ![PyPI](https://img.shields.io/pypi/v/aws-cidr-finder) [![codecov](https://codecov.io/gh/cooperwalbrun/aws-cidr-finder/branch/master/graph/badge.svg?token=DRVM149OYQ)](https://codecov.io/gh/cooperwalbrun/aws-cidr-finder)
+# aws-cidr-finder [![master](https://github.com/cooperwalbrun/aws-cidr-finder/actions/workflows/master.yml/badge.svg)](https://github.com/cooperwalbrun/aws-cidr-finder/actions/workflows/master.yml) [![PyPI](https://img.shields.io/pypi/v/aws-cidr-finder)](https://pypi.org/project/aws-cidr-finder) [![codecov](https://codecov.io/gh/cooperwalbrun/aws-cidr-finder/branch/master/graph/badge.svg?token=DRVM149OYQ)](https://codecov.io/gh/cooperwalbrun/aws-cidr-finder)
 
 1. [Overview](#overview)
    1. [An Example](#an-example)
