@@ -20,7 +20,7 @@ Nothing currently!
 
 ### Changed
 
-* IPv6 subnets in an `associating` state are now recognized by `aws-cidr-finder` (by
+* IPv6 subnet CIDR blocks in an `associating` state are now recognized by `aws-cidr-finder` (by
   [@cooperwalbrun](https://github.com/cooperwalbrun))
 
 ## v0.3.0 - 2022-11-16
