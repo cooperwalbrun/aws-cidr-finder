@@ -1,5 +1,6 @@
 # See: https://github.com/google/yapf#knobs and https://github.com/google/yapf/blob/master/yapf/yapflib/style.py
 [style]
+ALLOW_SPLIT_BEFORE_DICT_VALUE = false
 BASED_ON_STYLE = pep8
 BLANK_LINE_BEFORE_NESTED_CLASS_OR_DEF = false
 COALESCE_BRACKETS = true
