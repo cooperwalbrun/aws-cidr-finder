@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.4.0 - 2023-10-18
+
+### Added
+
+* Support for an optional `AWS_SESSION_TOKEN` environment variable is now implemented (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
+### Fixed
+
+* The `--profile` and `--region` CLI arguments now function as expected (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+* All CIDRs for VPCs which were omitted during the handling of the `--prefix` flag are now logged
+  as expected (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.3.2 - 2022-11-20
 
 ### Changed

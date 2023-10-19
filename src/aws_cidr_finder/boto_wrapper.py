@@ -55,6 +55,7 @@ class BotoWrapper:  # pragma: no cover
             boto = boto3.session.Session(
                 aws_access_key_id=os.environ.get("AWS_ACCESS_KEY_ID"),
                 aws_secret_access_key=os.environ.get("AWS_SECRET_ACCESS_KEY"),
+                aws_session_token=os.environ.get("AWS_SESSION_TOKEN"),
                 region_name=region
             )
         self._client: EC2Client = boto.client("ec2")
