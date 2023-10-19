@@ -83,7 +83,7 @@ def main() -> None:
         # yapf: enable
         if arguments.get("prefix") is not None:
             converted_cidrs, m = core.break_down_to_desired_prefix(
-                subnet_cidr_gaps[vpc], arguments["prefix"]
+                vpc.readable_name, subnet_cidr_gaps[vpc], arguments["prefix"]
             )
             subnet_cidr_gaps[vpc] = converted_cidrs
             messages += m

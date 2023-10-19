@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.4.1 - 2023-10-18
+
+### Changed
+
+* Messages relating to omitted prefixes during the handling of the `--prefix` argument will now
+  indicate the VPC to which the omission corresponds (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.4.0 - 2023-10-18
 
 ### Added

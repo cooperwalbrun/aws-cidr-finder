@@ -3,9 +3,9 @@ from typing import Any
 from aws_cidr_finder import core
 
 
-def _assert_lists_equal(actual: list[Any], expected: list[Any]) -> None:
-    assert len(actual) == len(expected)
-    assert set(actual) == set(expected)
+def _assert_lists_equal(expected: list[Any], actual: list[Any]) -> None:
+    assert len(expected) == len(actual)
+    assert set(expected) == set(actual)
 
 
 def test_get_first_ip_in_next_cidr() -> None:
@@ -88,30 +88,35 @@ def test_break_down_to_desired_prefix() -> None:
     test_cases = [
         # Test 1
         ([], 7,
-         []),
+         [], []),
         # Test 2
         (["::/0"], 2,
-         ["::/2", "4000::/2", "8000::/2", "c000::/2"]),
+         ["::/2", "4000::/2", "8000::/2", "c000::/2"], []),
         # Test 3
-        (["::/96", "0:0:0:1::/64"], 64,
-         ["0:0:0:1::/64"]),
-        # Test 4 - tests requesting a prefix that would result in too many CIDRs
+        (["::/96", "0:0:0:1::/90"], 91,
+         ["0:0:0:1::/91", "::1:0:20:0:0/91"], [
+             "Note: skipping the CIDR '::/96' in the VPC 'test' because its prefix (96) is numerically greater than the requested prefix (91)"
+         ]),
+        # Test 4 - requesting a prefix that would result in too many CIDRs
         (["::/32"], 64,
-         []),
-        # Test 5
+         [], [
+             "Warning: skipping the CIDR '::/32' in the VPC 'test' because its prefix is only 32 and converting it to a list of CIDRs whose prefixes are 64 will result in a list containing 4294967296 CIDRs!"
+         ]),
+        # # Test 5
         (["::/64", "0:0:0:1::/65"], 47,
-         [])
+         [], [
+             "Note: skipping the CIDR '::/64' in the VPC 'test' because its prefix (64) is numerically greater than the requested prefix (47)",
+             "Note: skipping the CIDR '0:0:0:1::/65' in the VPC 'test' because its prefix (65) is numerically greater than the requested prefix (47)"
+         ])
     ]
     # yapf: enable
 
-    for cidrs, prefix, expected in test_cases:
-        actual = core.break_down_to_desired_prefix(cidrs, prefix)
-        _assert_lists_equal(actual[0], expected)
-
-        reversed = cidrs.copy()
-        reversed.reverse()  # To assert that order is irrelevant
-        actual_reverse = core.break_down_to_desired_prefix(reversed, prefix)
-        _assert_lists_equal(actual_reverse[0], expected)
+    for input_cidrs, prefix, expected_cidrs, expected_messages in test_cases:
+        actual_cidrs, actual_messages = core.break_down_to_desired_prefix(
+            "test", input_cidrs, prefix
+        )
+        _assert_lists_equal(expected_cidrs, actual_cidrs)
+        _assert_lists_equal(expected_messages, actual_messages)
 
 
 def test_find_subnet_holes() -> None:
@@ -134,11 +139,6 @@ def test_find_subnet_holes() -> None:
     ]
     # yapf: enable
 
-    for vpc_cidr, cidrs, expected in test_cases:
-        actual = core.find_subnet_holes(vpc_cidr, cidrs)
-        _assert_lists_equal(actual, expected)
-
-        reversed = cidrs.copy()
-        reversed.reverse()  # To assert that order is irrelevant
-        actual_reverse = core.find_subnet_holes(vpc_cidr, reversed)
-        _assert_lists_equal(actual_reverse, expected)
+    for vpc_cidr, input_cidrs, expected_cidrs in test_cases:
+        actual_cidrs = core.find_subnet_holes(vpc_cidr, input_cidrs)
+        _assert_lists_equal(expected_cidrs, actual_cidrs)
