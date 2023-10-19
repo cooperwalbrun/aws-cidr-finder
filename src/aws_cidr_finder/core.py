@@ -84,7 +84,9 @@ def _is_cidr_inside(parent_cidr: str, child_cidr: str) -> bool:
 
 def sort_cidrs(cidrs: list[str]) -> list[str]:
     ret = cidrs.copy()
-    ret.sort(key=cmp_to_key(lambda a, b: ip_network(a).compare_networks(ip_network(b))))  # type: ignore
+    ret.sort(
+        key=cmp_to_key(lambda a, b: ip_network(a).compare_networks(ip_network(b)))  # type: ignore
+    )
     return ret
 
 
@@ -141,22 +143,23 @@ def find_subnet_holes(vpc_cidr: str, subnet_cidrs: list[str]) -> list[str]:
     return sort_cidrs(ret)
 
 
-def break_down_to_desired_prefix(cidrs: list[str], prefix: int) -> tuple[list[str], list[str]]:
+def break_down_to_desired_prefix(readable_vpc_name: str, cidrs: list[str],
+                                 prefix: int) -> tuple[list[str], list[str]]:
     ret = []
     messages = []
     for cidr in cidrs:
         old_prefix = get_prefix(cidr)
         if old_prefix > prefix:
             messages.append((
-                f"Note: skipping the CIDR '{cidr}' because its prefix ({old_prefix}) is "
-                f"numerically greater than the requested prefix ({prefix})"
+                f"Note: skipping the CIDR '{cidr}' in the VPC '{readable_vpc_name}' because its "
+                f"prefix ({old_prefix}) is numerically greater than the requested prefix ({prefix})"
             ))
             continue
         elif prefix - old_prefix > 8:
             messages.append((
-                f"Warning: skipping the CIDR '{cidr}' because its prefix is only {old_prefix} "
-                f"and converting it to a list of CIDRs with a prefix of {prefix} will result "
-                f"in a list containing {2**(prefix-old_prefix)} CIDRs!"
+                f"Warning: skipping the CIDR '{cidr}' in the VPC '{readable_vpc_name}' because its "
+                f"prefix is only {old_prefix} and converting it to a list of CIDRs whose prefixes "
+                f"are {prefix} will result in a list containing {2**(prefix-old_prefix)} CIDRs!"
             ))
             continue
 
