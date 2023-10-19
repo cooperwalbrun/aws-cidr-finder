@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 from argparse import ArgumentParser, Namespace
 from typing import Any
@@ -57,7 +58,16 @@ def _parse_arguments(arguments: list[str]) -> dict[str, Any]:
 def main() -> None:
     arguments = _parse_arguments(_get_arguments())
 
-    boto = BotoWrapper(profile_name=arguments.get("PROFILE"), region=arguments.get("REGION"))
+    if arguments.get("profile") is None and (os.environ.get("AWS_ACCESS_KEY_ID") is None
+                                             or os.environ.get("AWS_SECRET_ACCESS_KEY")):
+        print((
+            "You must specify either a profile or an access keypair via the environment variables "
+            "AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, and optionally AWS_SESSION_TOKEN (if "
+            "authenticating with a session)"
+        ))
+        exit(1)
+
+    boto = BotoWrapper(profile_name=arguments.get("profile"), region=arguments.get("region"))
 
     ipv6: bool = arguments["ipv6"]
 
@@ -76,7 +86,7 @@ def main() -> None:
                 subnet_cidr_gaps[vpc], arguments["prefix"]
             )
             subnet_cidr_gaps[vpc] = converted_cidrs
-            messages = m
+            messages += m
 
     if arguments["json"]:
         output: JSONOutput = {"aws-cidr-finder-messages": messages, "vpcs": {}}

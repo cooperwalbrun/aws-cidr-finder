@@ -123,8 +123,9 @@ a keypair. The former may be specified using the `--profile` argument on the CLI
 must be specified in environment variables. If both are available simultaneously, `aws-cidr-finder`
 will prefer the profile.
 
-The environment variables for the keypair approach are `AWS_ACCESS_KEY_ID` and
-`AWS_SECRET_ACCESS_KEY` (the same values Boto uses).
+The environment variables for the keypair approach are `AWS_ACCESS_KEY_ID`,
+`AWS_SECRET_ACCESS_KEY`, and optionally `AWS_SESSION_TOKEN` (if authenticating with a session).
+These are the same values Boto uses.
 
 You should also ensure that the profile/keypair you are using has the AWS IAM access needed to make
 the underlying API calls via Boto. Here is a minimal IAM policy document that fills this
