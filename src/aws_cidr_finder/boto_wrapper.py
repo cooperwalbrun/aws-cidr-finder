@@ -6,7 +6,8 @@ from mypy_boto3_ec2 import EC2Client
 from mypy_boto3_ec2.type_defs import TagTypeDef, VpcTypeDef, DescribeSubnetsResultTypeDef, \
     SubnetTypeDef
 
-from aws_cidr_finder.custom_types import VPC
+from aws_cidr_finder import core
+from aws_cidr_finder.custom_types import VPC, SingleCIDRVPC
 
 
 def _get_vpc_name(tags: list[TagTypeDef]) -> Optional[str]:
@@ -47,8 +48,8 @@ def _parse_subnet_cidrs(subnets: list[SubnetTypeDef], *, ipv6: bool) -> list[str
         return [subnet["CidrBlock"] for subnet in subnets if "CidrBlock" in subnet]
 
 
-class BotoWrapper:  # pragma: no cover
-    def __init__(self, *, profile_name: Optional[str], region: Optional[str]):
+class BotoWrapper:
+    def __init__(self, *, profile_name: Optional[str], region: Optional[str]):  # pragma: no cover
         if profile_name is not None:
             boto = boto3.session.Session(profile_name=profile_name, region_name=region)
         else:
@@ -60,7 +61,7 @@ class BotoWrapper:  # pragma: no cover
             )
         self._client: EC2Client = boto.client("ec2")
 
-    def get_vpc_data(self, *, ipv6: bool) -> list[VPC]:
+    def _get_vpc_data(self, *, ipv6: bool) -> list[VPC]:  # pragma: no cover
         vpcs = self._client.describe_vpcs()["Vpcs"]
         return [
             VPC(
@@ -73,5 +74,27 @@ class BotoWrapper:  # pragma: no cover
             ) for vpc in vpcs
         ]
 
-    def _get_subnet_cidrs(self, vpc_id: str) -> DescribeSubnetsResultTypeDef:
+    def _get_subnet_cidrs(self, vpc_id: str) -> DescribeSubnetsResultTypeDef:  # pragma: no cover
         return self._client.describe_subnets(Filters=[{"Name": "vpc-id", "Values": [vpc_id]}])
+
+    def get_subnet_cidr_gaps(
+        self, *, ipv6: bool, prefix: Optional[int]
+    ) -> tuple[dict[SingleCIDRVPC, list[str]], list[str]]:
+        subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]] = {}
+        messages: list[str] = []
+
+        for vpc in core.split_out_individual_cidrs(self._get_vpc_data(ipv6=ipv6)):
+            # yapf: disable
+            subnet_cidr_gaps[vpc] = core.find_subnet_holes(
+                vpc.cidr,
+                vpc.subnets
+            )
+            # yapf: enable
+            if prefix is not None:
+                converted_cidrs, m = core.break_down_to_desired_prefix(
+                    vpc.readable_name, subnet_cidr_gaps[vpc], prefix
+                )
+                subnet_cidr_gaps[vpc] = converted_cidrs
+                messages += m
+
+        return subnet_cidr_gaps, messages

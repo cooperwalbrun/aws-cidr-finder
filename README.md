@@ -4,7 +4,10 @@
    1. [An Example](#an-example)
 2. [Installation](#installation)
 3. [Configuration](#configuration)
-4. [Contributing](#contributing)
+4. [Usage](#usage)
+   1. [CLI](#cli)
+   2. [Python](#python)
+5. [Contributing](#contributing)
 
 ## Overview
 
@@ -144,6 +147,54 @@ requirement:
 
 Read more about the actions shown above
 [here](https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonec2.html).
+
+## Usage
+
+### CLI
+
+See [An Example](#an-example) above for a detailed demonstration of the CLI interface of this tool.
+You can also use `aws-cidr-finder --help` to see command line options.
+
+### Python
+
+Setup:
+
+```python
+from aws_cidr_finder import JSONOutput, find_cidrs
+
+# All arguments
+output: JSONOutput = find_cidrs(profile_name="", region="", ipv6=False, desired_prefix=20)
+
+# Minimal arguments (profile-based authentication)
+output: JSONOutput = find_cidrs(profile_name="")
+
+# Minimal arguments (environment variable-based authentication)
+output: JSONOutput = find_cidrs()
+
+# Other miscellaneous combinations
+output: JSONOutput = find_cidrs(profile_name="", ipv6=True)
+output: JSONOutput = find_cidrs(profile_name="", desired_prefix=16)
+output: JSONOutput = find_cidrs(region="")
+# ...and so on
+```
+
+Accessing the CIDR data:
+
+```python
+output: JSONOutput = ...  # See above
+
+for message in output["messages"]:
+    # Print the messages that would have been written to STDOUT when using the CLI
+    print(message)
+
+for vpc in output["data"]:
+    # The following shows how to access all available fields in the data object
+    print(vpc["id"])
+    print(vpc["name"])
+    print(vpc["cidr"])
+    for cidr in vpc["available_cidr_blocks"]:
+        print(cidr)
+```
 
 ## Contributing
 
