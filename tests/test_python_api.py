@@ -1,10 +1,10 @@
 from pytest_mock import MockerFixture
 
-from aws_cidr_finder import find_cidrs
+from aws_cidr_finder import find_available_cidrs
 from aws_cidr_finder.custom_types import VPC
 
 
-def test_find_cidrs_no_arguments(mocker: MockerFixture) -> None:
+def test_find_available_cidrs_no_arguments(mocker: MockerFixture) -> None:
     mocker.patch("aws_cidr_finder.__main__.BotoWrapper.__init__", return_value=None)
     mocker.patch(
         "aws_cidr_finder.__main__.BotoWrapper._get_vpc_data",
@@ -14,11 +14,12 @@ def test_find_cidrs_no_arguments(mocker: MockerFixture) -> None:
         ]
     )
 
-    data = find_cidrs()
+    data = find_available_cidrs()
 
     # yapf: disable
     assert data == {
         "messages": [],
+        "cidrs_not_converted_to_prefix": [],
         "data": [
             {
                 "id": "test1",
@@ -37,7 +38,7 @@ def test_find_cidrs_no_arguments(mocker: MockerFixture) -> None:
     # yapf: enable
 
 
-def test_find_cidrs_with_prefix(mocker: MockerFixture) -> None:
+def test_find_available_cidrs_with_prefix(mocker: MockerFixture) -> None:
     mocker.patch("aws_cidr_finder.__main__.BotoWrapper.__init__", return_value=None)
     mocker.patch(
         "aws_cidr_finder.__main__.BotoWrapper._get_vpc_data",
@@ -47,7 +48,7 @@ def test_find_cidrs_with_prefix(mocker: MockerFixture) -> None:
         ]
     )
 
-    data = find_cidrs(desired_prefix=20)
+    data = find_available_cidrs(desired_prefix=20)
 
     # yapf: disable
     assert data == {
@@ -55,6 +56,9 @@ def test_find_cidrs_with_prefix(mocker: MockerFixture) -> None:
             "Note: skipping the CIDR '172.31.40.0/21' in the VPC 'test-vpc2' because its prefix "
             "(21) is numerically greater than the requested prefix (20)"
         )],
+        "cidrs_not_converted_to_prefix": [
+            "172.31.40.0/21"
+        ],
         "data": [
             {
                 "id": "test1",

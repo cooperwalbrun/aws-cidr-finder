@@ -79,8 +79,9 @@ class BotoWrapper:
 
     def get_subnet_cidr_gaps(
         self, *, ipv6: bool, prefix: Optional[int]
-    ) -> tuple[dict[SingleCIDRVPC, list[str]], list[str]]:
+    ) -> tuple[dict[SingleCIDRVPC, list[str]], list[str], list[str]]:
         subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]] = {}
+        cidrs_not_converted_to_prefix: list[str] = []
         messages: list[str] = []
 
         for vpc in core.split_out_individual_cidrs(self._get_vpc_data(ipv6=ipv6)):
@@ -91,10 +92,11 @@ class BotoWrapper:
             )
             # yapf: enable
             if prefix is not None:
-                converted_cidrs, m = core.break_down_to_desired_prefix(
+                converted_cidrs, unconverted_cidrs, m = core.break_down_to_desired_prefix(
                     vpc.readable_name, subnet_cidr_gaps[vpc], prefix
                 )
                 subnet_cidr_gaps[vpc] = converted_cidrs
+                cidrs_not_converted_to_prefix += unconverted_cidrs
                 messages += m
 
-        return subnet_cidr_gaps, messages
+        return subnet_cidr_gaps, cidrs_not_converted_to_prefix, messages

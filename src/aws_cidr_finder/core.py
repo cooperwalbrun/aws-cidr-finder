@@ -144,9 +144,10 @@ def find_subnet_holes(vpc_cidr: str, subnet_cidrs: list[str]) -> list[str]:
 
 
 def break_down_to_desired_prefix(readable_vpc_name: str, cidrs: list[str],
-                                 prefix: int) -> tuple[list[str], list[str]]:
-    ret = []
-    messages = []
+                                 prefix: int) -> tuple[list[str], list[str], list[str]]:
+    converted_cidrs: list[str] = []
+    cidrs_not_converted_to_prefix: list[str] = []
+    messages: list[str] = []
     for cidr in cidrs:
         old_prefix = get_prefix(cidr)
         if old_prefix > prefix:
@@ -154,6 +155,7 @@ def break_down_to_desired_prefix(readable_vpc_name: str, cidrs: list[str],
                 f"Note: skipping the CIDR '{cidr}' in the VPC '{readable_vpc_name}' because its "
                 f"prefix ({old_prefix}) is numerically greater than the requested prefix ({prefix})"
             ))
+            cidrs_not_converted_to_prefix.append(cidr)
             continue
         elif prefix - old_prefix > 8:
             messages.append((
@@ -161,16 +163,19 @@ def break_down_to_desired_prefix(readable_vpc_name: str, cidrs: list[str],
                 f"prefix is only {old_prefix} and converting it to a list of CIDRs whose prefixes "
                 f"are {prefix} will result in a list containing {2**(prefix-old_prefix)} CIDRs!"
             ))
+            cidrs_not_converted_to_prefix.append(cidr)
             continue
 
         for sub in ip_network(cidr).subnets(new_prefix=prefix):
-            ret.append(_get_cidr(sub))
+            converted_cidrs.append(_get_cidr(sub))
 
-    return ret, messages
+    return converted_cidrs, cidrs_not_converted_to_prefix, messages
 
 
 def convert_to_json_format(
-    subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]], messages: list[str]
+    subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]],
+    cidrs_not_converted_to_prefix: list[str],
+    messages: list[str]
 ) -> JSONOutput:
     # yapf: disable
     vpc_data: list[VPCCIDRData] = [{
@@ -181,4 +186,8 @@ def convert_to_json_format(
     } for vpc, subnet_cidrs in subnet_cidr_gaps.items()]
     # yapf: enable
 
-    return {"messages": messages, "data": vpc_data}
+    return {
+        "messages": messages,
+        "cidrs_not_converted_to_prefix": cidrs_not_converted_to_prefix,
+        "data": vpc_data
+    }

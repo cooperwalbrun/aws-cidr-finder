@@ -71,12 +71,16 @@ def main() -> None:
 
     ipv6: bool = arguments["ipv6"]
 
-    subnet_cidr_gaps, messages = boto.get_subnet_cidr_gaps(
+    subnet_cidr_gaps, cidrs_not_converted_to_prefix, messages = boto.get_subnet_cidr_gaps(
         ipv6=ipv6, prefix=arguments.get("prefix")
     )
 
     if arguments["json"]:
-        print(json.dumps(convert_to_json_format(subnet_cidr_gaps, messages)))
+        print(
+            json.dumps(
+                convert_to_json_format(subnet_cidr_gaps, cidrs_not_converted_to_prefix, messages)
+            )
+        )
     else:
         if len(subnet_cidr_gaps) == 0:
             print(f"No available {'IPv6' if ipv6 else 'IPv4'} CIDR blocks were found in any VPC.")

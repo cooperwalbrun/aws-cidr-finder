@@ -73,6 +73,9 @@ def test_main_json_output(mocker: MockerFixture) -> None:
                     "Note: skipping the CIDR '172.31.40.0/21' in the VPC 'test-vpc2' because its "
                     "prefix (21) is numerically greater than the requested prefix (20)"
                 )],
+                "cidrs_not_converted_to_prefix": [
+                    "172.31.40.0/21"
+                ],
                 "data": [
                     {
                         "id": "test1",
