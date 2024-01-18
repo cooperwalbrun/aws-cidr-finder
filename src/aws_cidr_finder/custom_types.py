@@ -36,7 +36,9 @@ class SingleCIDRVPC:
         return hash((self.id, self.cidr))
 
 
-JSONOutput = TypedDict("JSONOutput", {
-    "aws-cidr-finder-messages": list[str],
-    "vpcs": dict[str, dict[str, list[str]]]
-})
+VPCCIDRData = TypedDict(
+    "VPCCIDRData", {
+        "id": str, "name": Optional[str], "cidr": str, "available_cidr_blocks": list[str]
+    }
+)
+JSONOutput = TypedDict("JSONOutput", {"messages": list[str], "data": list[VPCCIDRData]})

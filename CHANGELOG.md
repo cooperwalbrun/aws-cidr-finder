@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.5.0 - 2024-01-17
+
+### Added
+
+* Added a Python-based API for using `aws-cidr-finder` in a programmatic fashion (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
+### Changed
+
+* The JSON format of `aws-cidr-finder`'s output is now simpler: the `aws-cidr-finder-messages` key
+  has been changed to `messages`, `vpcs` has been changed to `data`, and the structure of `data` is
+  now a flat list of "VPC" `dict`s where each `dict` has the following keys: `id`, `name`, `cidr`,
+  and `available_cidr_blocks` (by [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.4.1 - 2023-10-18
 
 ### Changed

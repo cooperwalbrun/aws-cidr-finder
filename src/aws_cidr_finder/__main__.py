@@ -8,7 +8,7 @@ from tabulate import tabulate
 
 from aws_cidr_finder import core
 from aws_cidr_finder.boto_wrapper import BotoWrapper
-from aws_cidr_finder.custom_types import SingleCIDRVPC, JSONOutput
+from aws_cidr_finder.core import convert_to_json_format
 
 _parser: ArgumentParser = ArgumentParser(
     description="A CLI tool for finding unused CIDR blocks in AWS VPCs."
@@ -71,30 +71,12 @@ def main() -> None:
 
     ipv6: bool = arguments["ipv6"]
 
-    subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]] = {}
-    messages: list[str] = []
-
-    for vpc in core.split_out_individual_cidrs(boto.get_vpc_data(ipv6=ipv6)):
-        # yapf: disable
-        subnet_cidr_gaps[vpc] = core.find_subnet_holes(
-            vpc.cidr,
-            vpc.subnets
-        )
-        # yapf: enable
-        if arguments.get("prefix") is not None:
-            converted_cidrs, m = core.break_down_to_desired_prefix(
-                vpc.readable_name, subnet_cidr_gaps[vpc], arguments["prefix"]
-            )
-            subnet_cidr_gaps[vpc] = converted_cidrs
-            messages += m
+    subnet_cidr_gaps, messages = boto.get_subnet_cidr_gaps(
+        ipv6=ipv6, prefix=arguments.get("prefix")
+    )
 
     if arguments["json"]:
-        output: JSONOutput = {"aws-cidr-finder-messages": messages, "vpcs": {}}
-        for vpc, subnet_cidrs in subnet_cidr_gaps.items():
-            if vpc.readable_name not in output["vpcs"]:
-                output["vpcs"][vpc.readable_name] = {}
-            output["vpcs"][vpc.readable_name][vpc.cidr] = core.sort_cidrs(subnet_cidrs)
-        print(json.dumps(output))
+        print(json.dumps(convert_to_json_format(subnet_cidr_gaps, messages)))
     else:
         if len(subnet_cidr_gaps) == 0:
             print(f"No available {'IPv6' if ipv6 else 'IPv4'} CIDR blocks were found in any VPC.")

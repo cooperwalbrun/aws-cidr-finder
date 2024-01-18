@@ -3,7 +3,7 @@ from ipaddress import AddressValueError, ip_address, ip_network, IPv4Network, IP
     IPv4Address, IPv6Address
 from typing import Optional, Union
 
-from aws_cidr_finder.custom_types import VPC, SingleCIDRVPC
+from aws_cidr_finder.custom_types import VPC, SingleCIDRVPC, JSONOutput, VPCCIDRData
 
 
 def _get_cidr(network: Union[IPv4Network, IPv6Network]) -> str:
@@ -167,3 +167,18 @@ def break_down_to_desired_prefix(readable_vpc_name: str, cidrs: list[str],
             ret.append(_get_cidr(sub))
 
     return ret, messages
+
+
+def convert_to_json_format(
+    subnet_cidr_gaps: dict[SingleCIDRVPC, list[str]], messages: list[str]
+) -> JSONOutput:
+    # yapf: disable
+    vpc_data: list[VPCCIDRData] = [{
+        "id": vpc.id,
+        "name": vpc.name,
+        "cidr": vpc.cidr,
+        "available_cidr_blocks": subnet_cidrs
+    } for vpc, subnet_cidrs in subnet_cidr_gaps.items()]
+    # yapf: enable
+
+    return {"messages": messages, "data": vpc_data}
