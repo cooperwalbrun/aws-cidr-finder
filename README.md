@@ -158,33 +158,39 @@ You can also use `aws-cidr-finder --help` to see command line options.
 Setup:
 
 ```python
-from aws_cidr_finder import JSONOutput, find_cidrs
+from aws_cidr_finder import JSONOutput, find_available_cidrs
 
 # All arguments
-output: JSONOutput = find_cidrs(profile_name="", region="", ipv6=False, desired_prefix=20)
+output: JSONOutput = find_available_cidrs(profile_name="", region="", ipv6=False, desired_prefix=20)
 
 # Minimal arguments (profile-based authentication)
-output: JSONOutput = find_cidrs(profile_name="")
+output: JSONOutput = find_available_cidrs(profile_name="")
 
 # Minimal arguments (environment variable-based authentication)
-output: JSONOutput = find_cidrs()
+output: JSONOutput = find_available_cidrs()
 
 # Other miscellaneous combinations
-output: JSONOutput = find_cidrs(profile_name="", ipv6=True)
-output: JSONOutput = find_cidrs(profile_name="", desired_prefix=16)
-output: JSONOutput = find_cidrs(region="")
+output: JSONOutput = find_available_cidrs(profile_name="", ipv6=True)
+output: JSONOutput = find_available_cidrs(profile_name="", desired_prefix=16)
+output: JSONOutput = find_available_cidrs(region="")
 # ...and so on
 ```
 
 Accessing the CIDR data:
 
 ```python
-output: JSONOutput = ...  # See above
+output: JSONOutput = find_available_cidrs(...)  # See above
 
 for message in output["messages"]:
     # Print the messages that would have been written to STDOUT when using the CLI
     print(message)
 
+for cidr in output["cidrs_not_converted_to_prefix"]:
+    # If aws-cidr-finder could not convert a given available CIDR block into one or more CIDR blocks
+    # with the requested desired_prefix, it will be returned in this list
+    # Note: this is only applicable if you passed desired_prefix to find_available_cidrs
+    print(f"aws-cidr-finder did not convert the following CIDR block to the desired prefix: {cidr}")
+    
 for vpc in output["data"]:
     # Print all the information that is available in the VPC dict
     print(f'VPC ID: {vpc["id"]}')

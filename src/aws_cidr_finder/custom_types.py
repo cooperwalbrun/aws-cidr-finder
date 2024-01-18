@@ -41,4 +41,10 @@ VPCCIDRData = TypedDict(
         "id": str, "name": Optional[str], "cidr": str, "available_cidr_blocks": list[str]
     }
 )
-JSONOutput = TypedDict("JSONOutput", {"messages": list[str], "data": list[VPCCIDRData]})
+JSONOutput = TypedDict(
+    "JSONOutput", {
+        "messages": list[str],
+        "cidrs_not_converted_to_prefix": list[str],
+        "data": list[VPCCIDRData]
+    }
+)

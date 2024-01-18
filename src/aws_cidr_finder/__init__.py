@@ -19,7 +19,7 @@ finally:
 JSONOutput = custom_types.JSONOutput
 
 
-def find_cidrs(
+def find_available_cidrs(
     *,
     profile_name: Optional[str] = None,
     region: Optional[str] = None,
@@ -27,5 +27,7 @@ def find_cidrs(
     desired_prefix: Optional[int] = None
 ) -> JSONOutput:
     boto = BotoWrapper(profile_name=profile_name, region=region)
-    subnet_cidr_gaps, messages = boto.get_subnet_cidr_gaps(ipv6=ipv6, prefix=desired_prefix)
-    return convert_to_json_format(subnet_cidr_gaps, messages)
+    subnet_cidr_gaps, cidrs_not_converted_to_prefix, messages = boto.get_subnet_cidr_gaps(
+        ipv6=ipv6, prefix=desired_prefix
+    )
+    return convert_to_json_format(subnet_cidr_gaps, cidrs_not_converted_to_prefix, messages)

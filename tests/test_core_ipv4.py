@@ -112,7 +112,7 @@ def test_break_down_to_desired_prefix() -> None:
     # yapf: enable
 
     for input_cidrs, prefix, expected_cidrs, expected_messages in test_cases:
-        actual_cidrs, actual_messages = core.break_down_to_desired_prefix(
+        actual_cidrs, actual_unconverted_cidrs, actual_messages = core.break_down_to_desired_prefix(
             "test", input_cidrs, prefix
         )
         _assert_lists_equal(expected_cidrs, actual_cidrs)

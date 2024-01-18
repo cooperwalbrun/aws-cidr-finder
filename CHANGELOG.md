@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.6.0 - 2024-01-18
+
+### Added
+
+* The `find_available_cidrs` function now includes a `cidrs_not_converted_to_prefix` key which
+  contains a list of CIDRs that were skipped during the prefix conversion process (note: this is
+  only applicable if passing `desired_prefix` to `find_available_cidrs`) (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+* Python 3.12 is now an official build target with corresponding pipeline assurances (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
+### Changed
+
+* The `find_cidrs` function has been renamed to `find_available_cidrs` (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.5.0 - 2024-01-17
 
 ### Added
