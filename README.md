@@ -12,7 +12,7 @@
 ## Overview
 
 `aws-cidr-finder` is a Python CLI tool and library that finds unused CIDR blocks (either IPv4 or
-IPv6) in AWS VPCs. It is a very simple tool, but it can be quite useful for users who manage many
+IPv6) in AWS VPCs. It is a very simple tool, but it can be of great help to users who manage many
 subnets across one or more VPCs and do not want to spend the money required to use a solution like
 [AWS IPAM](https://docs.aws.amazon.com/vpc/latest/ipam/what-it-is-ipam.html).
 
@@ -50,7 +50,7 @@ CIDR               IP Count
 Total                 40960
 ```
 
-You should notice that by default, `aws-cidr-finder` will automatically "simplify" the CIDRs
+You should notice that, by default, `aws-cidr-finder` will automatically "simplify" the CIDRs
 by merging adjacent free CIDR blocks so that the resulting table shows the maximum contiguous space
 per CIDR (in other words, the resulting table has the fewest number of rows possible). This is why
 the result of the command displayed only two CIDRs: a `/19` and a `/17`.
@@ -122,12 +122,12 @@ pip install aws-cidr-finder
 All that needs to be configured in order to use this CLI is an
 [AWS CLI profile](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html) or
 a keypair. The former may be specified using the `--profile` argument on the CLI, while the keypair
-must be specified in environment variables. If both are available simultaneously, `aws-cidr-finder`
-will prefer the profile.
+must be specified in environment variables. If both are available at the same time,
+`aws-cidr-finder` will prefer the profile.
 
 The environment variables for the keypair approach are `AWS_ACCESS_KEY_ID`,
 `AWS_SECRET_ACCESS_KEY`, and optionally `AWS_SESSION_TOKEN` (if authenticating with a session).
-These are the same values Boto uses.
+These are the same environment variables that Boto uses.
 
 You should also ensure that the profile/keypair you are using has the AWS IAM access needed to make
 the underlying API calls via Boto. Here is a minimal IAM policy document that fills this

@@ -13,7 +13,7 @@ Nothing currently!
 
 ### Added
 
-* Added Python level API documentation to the `find_available_cidrs` function (by
+* Added Python-level API documentation to the `find_available_cidrs` function (by
   [@cooperwalbrun](https://github.com/cooperwalbrun))
 
 ## v0.6.0 - 2024-01-18
