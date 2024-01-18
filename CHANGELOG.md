@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.6.1 - 2024-01-18
+
+### Added
+
+* Added Python level API documentation to the `find_available_cidrs` function (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.6.0 - 2024-01-18
 
 ### Added
