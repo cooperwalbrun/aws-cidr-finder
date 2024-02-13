@@ -71,7 +71,7 @@ class BotoWrapper:
                 subnets=_parse_subnet_cidrs(
                     self._get_subnet_cidrs(vpc["VpcId"])["Subnets"], ipv6=ipv6
                 )
-            ) for vpc in vpcs
+            ) for vpc in vpcs if 'Tags' in vpc
         ]
 
     def _get_subnet_cidrs(self, vpc_id: str) -> DescribeSubnetsResultTypeDef:  # pragma: no cover
