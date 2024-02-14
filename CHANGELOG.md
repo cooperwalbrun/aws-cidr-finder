@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.6.2 - 2024-02-13
+
+### Fixed
+
+* VPCs with no tags will no longer induce the `KeyError: 'Tags'` error from Boto (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.6.1 - 2024-01-18
 
 ### Added

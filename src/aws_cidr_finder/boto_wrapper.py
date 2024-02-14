@@ -3,15 +3,14 @@ from typing import Optional
 
 import boto3
 from mypy_boto3_ec2 import EC2Client
-from mypy_boto3_ec2.type_defs import TagTypeDef, VpcTypeDef, DescribeSubnetsResultTypeDef, \
-    SubnetTypeDef
+from mypy_boto3_ec2.type_defs import VpcTypeDef, DescribeSubnetsResultTypeDef, SubnetTypeDef
 
 from aws_cidr_finder import core
 from aws_cidr_finder.custom_types import VPC, SingleCIDRVPC
 
 
-def _get_vpc_name(tags: list[TagTypeDef]) -> Optional[str]:
-    for key_value_pair in tags:
+def _get_vpc_name(vpc: VpcTypeDef) -> Optional[str]:
+    for key_value_pair in vpc.get("Tags", []):
         if key_value_pair["Key"] == "Name":
             return key_value_pair["Value"]
     return None
@@ -66,7 +65,7 @@ class BotoWrapper:
         return [
             VPC(
                 id=vpc["VpcId"],
-                name=_get_vpc_name(vpc["Tags"]),
+                name=_get_vpc_name(vpc),
                 cidrs=_parse_vpc_cidrs(vpc, ipv6=ipv6),
                 subnets=_parse_subnet_cidrs(
                     self._get_subnet_cidrs(vpc["VpcId"])["Subnets"], ipv6=ipv6
