@@ -9,8 +9,8 @@ def _assert_lists_equal(actual: list[Any], expected: list[Any]) -> None:
 
 
 def test_get_vpc_name() -> None:
-    assert boto_wrapper._get_vpc_name([]) is None
-    assert boto_wrapper._get_vpc_name([{"Key": "Name", "Value": "test"}]) == "test"
+    assert boto_wrapper._get_vpc_name({}) is None
+    assert boto_wrapper._get_vpc_name({"Tags": [{"Key": "Name", "Value": "test"}]}) == "test"
 
 
 def test_parse_vpc_cidrs_ipv4() -> None:
