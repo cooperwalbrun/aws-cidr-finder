@@ -86,7 +86,7 @@ Total                 40960
 
 With the `--prefix` argument, we can now query our available network space to our desired level of
 detail. Note that if we specify a `--prefix` with a value lower than any of the prefixes in the
-originally-returned list, those CIDRs will be skipped. For example, if we run the following:
+available CIDRs list, those CIDRs will be skipped. For example, if we run the following:
 
 ```bash
 aws-cidr-finder --profile myprofile --prefix 18
@@ -111,7 +111,7 @@ CIDR into one or more `/18` CIDRs.
 ## Installation
 
 If you have Python >=3.10 and <4.0 installed, `aws-cidr-finder` can be installed from PyPI using
-something like
+something like this:
 
 ```bash
 pip install aws-cidr-finder
@@ -189,7 +189,7 @@ for message in output["messages"]:
 for cidr in output["cidrs_not_converted_to_prefix"]:
     # If aws-cidr-finder could not convert a given available CIDR block into one or more CIDR blocks
     # with the requested desired_prefix, it will be returned in this list
-    # Note: this is only applicable if you passed desired_prefix to find_available_cidrs
+    # Note: this list is only populated if you passed desired_prefix to find_available_cidrs
     print(f"aws-cidr-finder did not convert the following CIDR block to the desired prefix: {cidr}")
     
 for vpc in output["data"]:
