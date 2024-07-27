@@ -87,7 +87,7 @@ running the command above.
 ## Unit Testing
 
 To run the unit tests, **ensure you are in the virtual environment** with development or testing
-dependencies installed (see above) if running tests via `setup.py`, otherwise ensure you are **not**
+dependencies installed (see above) if running tests via `pytest`, otherwise ensure you are **not**
 in a virtual environment if running tests via `tox`. Then, run the corresponding command in this
 project's root directory:
 
