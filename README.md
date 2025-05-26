@@ -85,8 +85,8 @@ Total                 40960
 ```
 
 With the `--prefix` argument, we can now query our available network space to our desired level of
-detail. Note that if we specify a `--prefix` with a value lower than any of the prefixes in the
-available CIDRs list, those CIDRs will be skipped. For example, if we run the following:
+detail. Keep in mind that if we specify a `--prefix` with a value lower than any of the prefixes in
+the available CIDRs list, those CIDRs will be skipped. For example, if we run the following:
 
 ```bash
 aws-cidr-finder --profile myprofile --prefix 18
