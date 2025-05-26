@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 Nothing currently!
 
+## v0.6.3 - 2025-05-26
+
+### Added
+
+* Python 3.13 is now an official build target with corresponding pipeline assurances (by
+  [@cooperwalbrun](https://github.com/cooperwalbrun))
+
 ## v0.6.2 - 2024-02-13
 
 ### Fixed
