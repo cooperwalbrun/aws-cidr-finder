@@ -11,6 +11,8 @@ Nothing currently!
 
 ## v0.6.4 - 2026-10-29
 
+### Added
+
 * Python 3.14 is now an official build target with corresponding pipeline assurances (by
   [@cooperwalbrun](https://github.com/cooperwalbrun))
 
