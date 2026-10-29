@@ -44,8 +44,8 @@ pip install -e .[testing]     # Unit testing purposes only
     pip install $PACKAGE # Adds the package to your virtual environment
     ```
 
-2. Test the dependency out (i.e. write your code) to ensure it satisfies your needs and that it
-   works well with existing dependencies.
+2. Make your code and test changes using the dependency to ensure it satisfies your needs and that
+   it works well with existing dependencies.
 
 3. Add a reference to the package in the appropriate place(s). You must do only **one** of the tasks
    below.
@@ -55,7 +55,7 @@ pip install -e .[testing]     # Unit testing purposes only
      `setup.cfg`.
    * If it is specific to a **GitHub Actions** workflow, add it under `github_actions =` in
      `setup.cfg`.
-   * If it is a **production/runtime** dependency, add it under `install_requires =` in
+   * If it is a **production or runtime** dependency, add it under `install_requires =` in
      `setup.cfg`. Unless you know lower versions will work too, specify the version you installed
      as a lower bound (e.g. `somemodule>=X.Y.Z`). It is also recommended to specify an upper bound
      to avoid situations where a breaking change was introduced in a major version upgrade (e.g.
@@ -70,9 +70,9 @@ application (see [Development Workspace Setup](#development-workspace-setup) abo
 
 ### Updating Python in the Virtual Environment
 
-After the newer version of Python is installed on your machine, then use `venv`'s built-in
-functionality for upgrading Python in a virtual environment. Ensure that you execute this command
-from **outside** your virtual environment, otherwise it will not work properly.
+After the newer version of Python is installed on your machine, use `venv`'s built-in `--upgrade`
+flow to upgrade Python in a virtual environment. Ensure that you execute this command from
+**outside** your virtual environment, otherwise it will not work properly.
 
 >Note: in this example, we have already updated our system path to point to the newer version of
 >Python.
